@@ -5,7 +5,6 @@ leaving this here for the future btw
 ### houses
 - [ ] POST /houses | creates a house | d: { name: string, icon: base64? }
 - [ ] DELETE /houses/:id | deletes a house
-- [ ] DELETE /users/@me/houses/:id | leaves a house
 - [ ] PATCH /houses/:id | edit a house | d: { name: string, icon: base64 }
 - [ ] POST /houses/:id/entities | adds a category(only one so far) | d: { name: string, type: int{1: 'category''}}
 
@@ -34,3 +33,16 @@ leaving this here for the future btw
 - [ ] GET /users/@me | gets your account
 - [ ] GET /streams/@me/mentions | gets your mentions
 - [ ] GET /streams/@me/feed | gets your feed
+- [ ] POST /users/@me/rooms | adds a DM room | d: { recipient: string }
+- [ ] POST /users/@me/rooms | adds a group DM room | d: { recipients: string[] }
+- [ ] DELETE /users/@me/houses/:id | leaves a house
+- [ ] DELETE /users/@me/rooms/:id | leaves a group DM
+- [ ] DELETE /relationships/@me/friends/:id | unfriends someone
+- [ ] POST /relationships/@me/friend-requests | sends a friend request to someone | d: { user_id: string }
+- [ ] DELETE /relationships/@me/friend-requests/:id | cancels a friend request
+- [ ] PUT /relationships/@me/blocked/:id | blocks a user
+- [ ] DELETE /relationships/@me/blocked/:id | unblocks a user
+- [ ] PUT /users/@me/settings/room_overrides/:id | changes room settings | d: { notification_preference: int{ 0: 'all', 1: 'mentions', 2: 'none' } }
+- [ ] POST /rooms/:id/call | start a call
+- [ ] POST /rooms/:id/call/decline | decline a call
+- [ ] PUT /rooms/:id/recipients/:id

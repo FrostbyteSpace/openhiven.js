@@ -6,7 +6,7 @@ leaving this here for the future btw
 - [ ] POST /houses | creates a house | d: { name: string, icon: base64? }
 - [ ] DELETE /houses/:id | deletes a house
 - [ ] PATCH /houses/:id | edit a house | d: { name: string, icon: base64 }
-- [ ] POST /houses/:id/entities | adds a category(only one so far) | d: { name: string, type: int{1: 'category''}}
+- [ ] POST /houses/:id/entities | adds an entity (only category so far) | d: { name: string, type: int{1: 'category''}}
 - [ ] DELETE /houses/:id/entities/:id | deletes a category, has to be empty
 
 - [ ] POST /houses/:id/invites | creates an invite | d: { max_uses: int, max_age: int }
@@ -43,11 +43,10 @@ leaving this here for the future btw
 - [ ] DELETE /users/@me/houses/:id | leaves a house
 - [ ] DELETE /users/@me/rooms/:id | leaves a group DM
 - [ ] DELETE /relationships/@me/friends/:id | unfriends someone
+- [ ] GET /relationships/@me/friends | get your friends
 - [ ] POST /relationships/@me/friend-requests | sends a friend request to someone | d: { user_id: string }
 - [ ] DELETE /relationships/@me/friend-requests/:id | cancels a friend request
+- [ ] GET /relationships/@me/friend-requests | get your current friend requests
 - [ ] PUT /relationships/@me/blocked/:id | blocks a user
 - [ ] DELETE /relationships/@me/blocked/:id | unblocks a user
 - [ ] PUT /users/@me/settings/room_overrides/:id | changes room settings | d: { notification_preference: int{ 0: 'all', 1: 'mentions', 2: 'none' } }
-
-## Axios
-create an Axios instance with baseUrl and default Auth header

@@ -7,6 +7,7 @@ leaving this here for the future btw
 - [ ] DELETE /houses/:id | deletes a house
 - [ ] PATCH /houses/:id | edit a house | d: { name: string, icon: base64 }
 - [ ] POST /houses/:id/entities | adds a category(only one so far) | d: { name: string, type: int{1: 'category''}}
+- [ ] DELETE /houses/:id/entities/:id | deletes a category, has to be empty
 
 - [ ] POST /houses/:id/invites | creates an invite | d: { max_uses: int, max_age: int }
 - [ ] GET /invites/:code | fetches an invite
@@ -16,13 +17,17 @@ leaving this here for the future btw
 - [ ] POST /houses/:id/rooms | creates a room | d: { name: string, parent_entity_id?(category/house): string }
 - [ ] DELETE /houses/:id/rooms/:id | deletes a room
 - [ ] POST /rooms/:id/typing | starts typing in a room | d: { }
+- [ ] POST /rooms/:id/call | start a call
+- [ ] POST /rooms/:id/call/decline | decline a call
+- [ ] PUT /rooms/:id/recipients/:id | adds a user to a group DM
 
 ### messages
 - [ ] POST /rooms/:id/media_messages | creates an attachment message | d: form { file: named file }
 - [ ] POST /rooms/:id/messages | creates a text message | d: { content: string}
 - [ ] DELETE /rooms/:id/messages/:id | deletes a message
 - [ ] PATCH /rooms/:id/messages/:id | edits a message | d: { content: string }
-- [ ] GET /rooms/182657092941770841/messages
+- [ ] GET /rooms/:id/messages | gets messages from a room | d: ?before=id
+- [ ] DELETE /houses/:id/rooms/:id/messages/:id | deletes a house message
 
 ### users
 - [ ] GET /users/:id | gets an account
@@ -43,6 +48,6 @@ leaving this here for the future btw
 - [ ] PUT /relationships/@me/blocked/:id | blocks a user
 - [ ] DELETE /relationships/@me/blocked/:id | unblocks a user
 - [ ] PUT /users/@me/settings/room_overrides/:id | changes room settings | d: { notification_preference: int{ 0: 'all', 1: 'mentions', 2: 'none' } }
-- [ ] POST /rooms/:id/call | start a call
-- [ ] POST /rooms/:id/call/decline | decline a call
-- [ ] PUT /rooms/:id/recipients/:id
+
+## Axios
+create an Axios instance with baseUrl and default Auth header

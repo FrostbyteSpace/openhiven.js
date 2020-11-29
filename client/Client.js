@@ -12,7 +12,8 @@ const Room = require('../types/Room.js');
 const User = require('../types/User.js');
 const Invite = require('../types/Invite.js');
 
-APIURL = 'https://api.hiven.io/v1/';
+const APIURL = 'https://api.hiven.io/v1/';
+const USERAGENT = 'easyHiven.js by a member of FrostbyteSpace@github';
 
 module.exports = class Client extends EventEmitter {
   constructor(options={}) {
@@ -25,7 +26,8 @@ module.exports = class Client extends EventEmitter {
 
     this.ws = new Websocket();
     this.axios = new Axios.create({
-      baseURL: APIURL
+      baseURL: APIURL,
+      headers: { 'User-Agent': USERAGENT }
     });
 
     this.users = new Collection();

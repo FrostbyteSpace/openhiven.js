@@ -1,6 +1,6 @@
 const Client = require('./Client.js');
-const Command = require('./Command.js');
-const Util = require('./Util.js');
+const Command = require('../lib/Command.js');
+const Util = require('../lib/Util.js');
 
 const Collection = require('../djs-collection');
 const fs = require('fs');
@@ -23,9 +23,12 @@ module.exports = class Bot extends Client {
     this.onInit = options.on_init || this._OnInit;
 
     this.on('message', message => {
+      message.client = this;
       this.onMessage(message);
     });
     this.once('init', async () => {
+      if (this.options.type == 'user') this.owner = this.user;
+      if (typeof this.owner == 'string') this.owner = this.users.resolve(this.owner);
       this.onInit();
     });
   }
@@ -55,7 +58,7 @@ module.exports = class Bot extends Client {
       }
     }
     else {
-      var e = new Error('command can only be a string or a EasyHiven.Command, or an array of either of those.');
+      var e = new Error('options.commands can only be a string or a EasyHiven.Command, or an array of either of those.');
       e.name = 'TypeError';
       return e;
     }
@@ -79,11 +82,9 @@ module.exports = class Bot extends Client {
 
 
   async _OnMessage(message) {
-    if (message.author.bot) return;
-    var prefix = message.author.prefix || message.room.prefix || (message.house ? message.house.prefix : null) || this.prefix;
-    const prefixRegex = new RegExp(`^(<@!?${this.user.id}>|${Util.EscapeRegex(prefix)})\\s*`);
+    const prefixRegex = new RegExp(`^(<@!?${this.user.id}>|${Util.EscapeRegex(this.prefix)})\\s*`);
   	if (!prefixRegex.test(message.content)) return;
-  	[, prefix] = message.content.match(prefixRegex);
+  	let [, prefix] = message.content.match(prefixRegex);
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
@@ -100,10 +101,10 @@ module.exports = class Bot extends Client {
 
 
 
-  static Self = class Self extends Bot {
+  static Selfbot = class Selfbot extends Bot {
     constructor(options) {
       options.type = 'user';
-      super(options)
+      super(options);
     }
   }
 }

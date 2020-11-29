@@ -1,47 +1,49 @@
 # TODO
 ## Endpoints
-leaving this here for the future btw
+leaving this here for the future.
+when they're checked that just means they're implemented in easyHiven.js, people who just wanna use the list can disregard them >wO
 
 ### houses
-- [ ] POST /houses | creates a house | d: { name: string, icon: base64? }
-- [ ] DELETE /houses/:id | deletes a house
-- [ ] PATCH /houses/:id | edit a house | d: { name: string, icon: base64 }
-- [ ] POST /houses/:id/entities | adds an entity (only category so far) | d: { name: string, type: int{1: 'category''}}
-- [ ] DELETE /houses/:id/entities/:id | deletes a category, has to be empty
+- [x] POST /houses | creates a house | d: { name: string, icon: base64? }
+- [x] DELETE /houses/:id | deletes a house
+- [x] PATCH /houses/:id | edit a house | d: { name: string, icon: base64 }
+- [x] POST /houses/:id/entities | adds an entity (only category so far) | d: { name: string, type: int{1: 'category''}}
+- [x] DELETE /houses/:id/entities/:id | deletes a category, has to be empty
 
-- [ ] POST /houses/:id/invites | creates an invite | d: { max_uses: int, max_age: int }
-- [ ] GET /invites/:code | fetches an invite
-- [ ] POST /invites/:code | uses an invite | d: { }
+- [x] POST /houses/:id/invites | creates an invite | d: { max_uses: int, max_age: int }
+- [x] GET /invites/:code | fetches an invite
+- [x] POST /invites/:code | uses an invite | d: { }
 
 ### rooms
-- [ ] POST /houses/:id/rooms | creates a room | d: { name: string, parent_entity_id?(category/house): string }
-- [ ] DELETE /houses/:id/rooms/:id | deletes a room
-- [ ] POST /rooms/:id/typing | starts typing in a room | d: { }
-- [ ] POST /rooms/:id/call | start a call
-- [ ] POST /rooms/:id/call/decline | decline a call
+- [x] POST /houses/:id/rooms | creates a room | d: { name: string, parent_entity_id?(category/house): string }
+- [x] DELETE /houses/:id/rooms/:id | deletes a room
+- [x] POST /rooms/:id/typing | starts typing in a room | d: { }
+- [x] POST /rooms/:id/call | start a call | d: { }
+- [x] POST /rooms/:id/call/decline | decline a call | d: { }
 - [ ] PUT /rooms/:id/recipients/:id | adds a user to a group DM
 
 ### messages
-- [ ] POST /rooms/:id/media_messages | creates an attachment message | d: form { file: named file }
-- [ ] POST /rooms/:id/messages | creates a text message | d: { content: string}
-- [ ] DELETE /rooms/:id/messages/:id | deletes a message
-- [ ] PATCH /rooms/:id/messages/:id | edits a message | d: { content: string }
+- [x] POST /rooms/:id/media_messages | creates an attachment message | d: form { file: named file }
+- [x] POST /rooms/:id/messages | creates a text message | d: { content: string}
+- [x] DELETE /rooms/:id/messages/:id | deletes a message
+- [x] PATCH /rooms/:id/messages/:id | edits a message | d: { content: string }
 - [ ] GET /rooms/:id/messages | gets messages from a room | d: ?before=id
-- [ ] DELETE /houses/:id/rooms/:id/messages/:id | deletes a house message
+- [x] DELETE /houses/:id/rooms/:id/messages/:id | deletes a house message, (obsolete, not in easyHiven.js)
+- [x] POST /rooms/:id/messages/:id/ack | mark as read, probably, ack = short for acknowledge? | d: { }
 
 ### users
-- [ ] GET /users/:id | gets an account
+- [x] GET /users/:@username | gets an account
 - [ ] GET /relationships/:id/mutual-friends | gets your mutual friends with an account
 
 ### \@me
-- [ ] PATCH /users/@me | edits your account | d: { bio: string, name: string, icon: base64?, header: base64?, location: string, website: string }
+- [x] PATCH /users/@me | edits your account | d: { bio: string, name: string, icon: base64?, header: base64?, location: string, website: string }
 - [ ] GET /users/@me | gets your account
 - [ ] GET /streams/@me/mentions | gets your mentions
 - [ ] GET /streams/@me/feed | gets your feed
-- [ ] POST /users/@me/rooms | adds a DM room | d: { recipient: string }
-- [ ] POST /users/@me/rooms | adds a group DM room | d: { recipients: string[] }
-- [ ] DELETE /users/@me/houses/:id | leaves a house
-- [ ] DELETE /users/@me/rooms/:id | leaves a group DM
+- [x] POST /users/@me/rooms | adds a DM room | d: { recipient: string }
+- [x] POST /users/@me/rooms | adds a group DM room | d: { recipients: string[] }
+- [x] DELETE /users/@me/houses/:id | leaves a house
+- [x] DELETE /users/@me/rooms/:id | leaves a group DM
 - [ ] DELETE /relationships/@me/friends/:id | unfriends someone
 - [ ] GET /relationships/@me/friends | get your friends
 - [ ] POST /relationships/@me/friend-requests | sends a friend request to someone | d: { user_id: string }

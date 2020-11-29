@@ -6,6 +6,7 @@ module.exports = class User {
     this.name = data.name;
     this.icon = data.icon;
     this.header = data.header;
+    this.bot = data.bot;
     this.user_flags = data.user_flags;
   }
 }

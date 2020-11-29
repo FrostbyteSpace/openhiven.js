@@ -7,7 +7,7 @@ module.exports = class Member {
     this.roles = new Collection();
     this.presence = data.presence;
     this.joined = data.joined_at;
-    if (data.user) this.user = client.users.get(data.user.id) || new User(client, data.user);
+    this.user = client.users.get(data.user.id) || new User(client, data.user);
     this.house = data.house || client.houses.get(data.house_id);
     this.client = client;
 

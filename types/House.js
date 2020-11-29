@@ -27,6 +27,7 @@ module.exports = class House {
       for (let m of data.members) {
         let member = new Member(client, {...m, house: this});
         this.members.set(member.id, member);
+        if (!client.users.has(member.id)) client.users.set(member.id, member.user);
       }
     }
     if (data.rooms) {

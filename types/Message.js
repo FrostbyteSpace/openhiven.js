@@ -1,5 +1,5 @@
 const User = require('./User.js');
-const Attachment = require('')
+const Attachment = require('./Attachment.js')
 const Collection = require('../djs-collection');
 
 module.exports = class Message {
@@ -15,9 +15,9 @@ module.exports = class Message {
     this.timestamp = data.timestamp;
     this.client = client;
 
-    for (let m of data.mentions) {
-      let mention = (this.house ? this.house.members.get(m.id) : null) || client.users.get(m.id) || new User(client, m);
-      this.mentions.set(m.id, member);
+    for (let m in data.mentions) {
+      let mention = (this.house ? this.house.members.get(m) : null) || client.users.get(m) || new User(client, data.mentions[m]);
+      this.mentions.set(m, mention);
     }
   }
 

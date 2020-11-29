@@ -1,6 +1,6 @@
 const Collection = require('../djs-collection');
 const User = require('./User.js');
-const Member = require('./member.js');
+const Member = require('./Member.js');
 const Message = require('./Message.js');
 const FormData = require('form-data');
 

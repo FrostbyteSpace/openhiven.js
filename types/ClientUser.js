@@ -5,14 +5,15 @@ module.exports = class ClientUser extends User {
   constructor(client, data={}, friends) {
     super(client, data);
 
-    this.friends = new Collection();
-    if (friends) {
-      for (let f in friends) {
-        let friend = new User(client, friends[f].data);
-        client.users.set(f, friend);
-        this.friends.set(f, friend);
-      }
-    }
+    // this.friends = new Collection();
+    // if (friends) {
+    //   for (let f in friends) {
+    //     let friend = new User(client, friends[f].data);
+    //     client.users.set(f, friend);
+    //     this.friends.set(f, friend);
+    //   }
+    // }
+    // relationships.type: { 1: 'outgoing request', 2: 'incoming request', 3: 'friends', 4: 'restricted', 5: 'blocked' }
   }
 
 

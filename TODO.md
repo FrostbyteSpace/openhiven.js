@@ -51,4 +51,6 @@ when they're checked that just means they're implemented in easyHiven.js, people
 - [ ] GET /relationships/@me/friend-requests | get your current friend requests
 - [ ] PUT /relationships/@me/blocked/:id | blocks a user
 - [ ] DELETE /relationships/@me/blocked/:id | unblocks a user
+- [ ] PUT relationships/@me/restricted/:id | restricts a user
+- [ ] DELETE relationships/@me/restricted/:id | unrestricts a user?
 - [ ] PUT /users/@me/settings/room_overrides/:id | changes room settings | d: { notification_preference: int{ 0: 'all', 1: 'mentions', 2: 'none' } }

@@ -58,19 +58,19 @@ when they're checked that just means they're implemented in easyHiven.js, people
 - [ ] PUT /users/@me/settings/room_overrides/:id | changes room settings | d: { notification_preference: int }
 
 ## Websocket Events
-a list of all websocket events, WIP
+a list of all websocket events
 
 - [x] [after connecting](#after-connecting)
 - [x] [INIT_STATE](#init_state)
 - [x] [HOUSE_JOIN](#house_join)
 - [ ] [HOUSE_MEMBERS_CHUNK](#house_members_chunk)
-- [ ] [TYPING_START](#typing_start)
-- [ ] [MESSAGE_CREATE](#message_create)
-- [ ] [MESSAGE_UPDATE](#message_update)
-- [ ] [MESSAGE_DELETE](#message_delete)
-- [ ] [ROOM_CREATE](#room_create)
-- [ ] [ROOM_UPDATE](#room_update)
-- [ ] [ROOM_DELETE](#room_delete)
+- [x] [TYPING_START](#typing_start)
+- [x] [MESSAGE_CREATE](#message_create)
+- [x] [MESSAGE_UPDATE](#message_update)
+- [x] [MESSAGE_DELETE](#message_delete)
+- [x] [ROOM_CREATE](#room_create)
+- [x] [ROOM_UPDATE](#room_update)
+- [x] [ROOM_DELETE](#room_delete)
 - [ ] [HOUSE_ENTITIES_UPDATE](#house_entities_update)
 - [ ] [HOUSE_MEMBER_UPDATE](#house_member_update)
 - [ ] [USER_UPDATE](#user_update)
@@ -563,6 +563,16 @@ d: {
 ```
 
 
+## Websocket Data (WIP)
+list of websocket data you can send
+
+### Selecting a room
+returns... nothing? lol
+```
+{"op":4,"d":{"id":"191544281301778432"}}
+```
+
+
 ## Permissions
 all the permission bits in a row, I will probably make a class for this at some point;
 - SEND_MESSAGES = 1 << 0,
@@ -677,7 +687,161 @@ all the permission bits in a row, I will probably make a class for this at some 
 }
 ```
 
-### Type Integer Meanings
+## Type Integer Meanings
 - relationships.type: { 1: 'outgoing request', 2: 'incoming request', 3: 'friends', 4: 'restricted', 5: 'blocked' }
 - notification_preference: { 0: 'all', 1: 'mentions', 2: 'none' }
 - room types { 0: 'House', 1: 'DM', 2: 'Group'}
+
+## Secret Chat Stuff
+```
+{"op":9,"d":{"recipient":""}}
+{"op":8,"d":{"public_key":"-----BEGIN PUBLIC KEY-----KEY-----END PUBLIC KEY-----"}}
+{"op":10,"d":{"secret_chat_id":"","encrypted_content":"content"}}
+
+REQUEST_PUBLIC_KEY
+{
+  "requester_resource_id": "",
+  "request_type": "secret_chat_init"
+}
+
+SECRET_CHAT_CREATE
+{
+  "type": 3,
+  "status": "AWAITING_PUBLIC_KEYS",
+  "recipients": [
+    {
+      "username": "",
+      "user_flags": "",
+      "name": "",
+      "id": "",
+      "icon": "",
+      "header": ""
+    },
+    {
+      "username": "",
+      "user_flags": "",
+      "name": "",
+      "id": "",
+      "icon": "",
+      "header": ""
+    }
+  ],
+  "public_keys": {},
+  "id": ""
+}
+
+GENERATE_KEYS
+{
+  "success": true,
+  "type": "GENERATE_KEYS",
+  "idempotency": 18288,
+  "result": "-----BEGIN PUBLIC KEY-----KEY-----END PUBLIC KEY-----"
+}
+
+SECRET_CHAT_UPDATE
+{
+  "type": 3,
+  "status": "READY",
+  "recipients": [
+    {
+      "username": "",
+      "user_flags": "",
+      "name": "",
+      "id": "",
+      "icon": "",
+      "header": ""
+    },
+    {
+      "username": "",
+      "user_flags": "",
+      "name": "",
+      "id": "",
+      "icon": "",
+      "header": ""
+    }
+  ],
+  "public_keys": {
+    "": "-----BEGIN PUBLIC KEY-----KEY-----END PUBLIC KEY-----",
+    "": "-----BEGIN PUBLIC KEY-----KEY-----END PUBLIC KEY-----"
+  },
+  "id": ""
+}
+
+{"op":8,"d":{"public_key":"-----BEGIN PUBLIC KEY-----KEY-----END PUBLIC KEY-----"}}
+
+REQUEST_PUBLIC KEY
+{
+  "requester_resource_id": "",
+  "request_type": "secret_chat_init"
+}
+
+GENERATE_KEYS
+{
+  "success": true,
+  "type": "GENERATE_KEYS",
+  "idempotency": 29702,
+  "result": "-----BEGIN PUBLIC KEY-----KEY-----END PUBLIC KEY-----"
+}
+
+SECRET_CHAT_UPDATE
+{
+  "type": 3,
+  "status": "READY",
+  "recipients": [
+    {
+      "username": "",
+      "user_flags": "",
+      "name": "",
+      "id": "",
+      "icon": "",
+      "header": ""
+    },
+    {
+      "username": "",
+      "user_flags": "",
+      "name": "",
+      "id": "",
+      "icon": "",
+      "header": ""
+    }
+  ],
+  "public_keys": {
+    "": "-----BEGIN PUBLIC KEY-----KEY-----END PUBLIC KEY-----",
+    "": "-----BEGIN PUBLIC KEY-----KEY-----END PUBLIC KEY-----"
+  },
+  "id": ""
+}
+
+
+
+ENCRYPT
+{
+  success: true,
+  type: "ENCRYPT",
+  idempotency: 78671,
+  result: ""
+}
+
+MESSAGE_CREATE
+{
+  "timestamp": ,
+  "room_id": "",
+  "recipient_ids": [
+    "",
+    ""
+  ],
+  "mentions": [],
+  "id": "",
+  "encrypted": true,
+  "content": "",
+  "author_id": "",
+  "author": {
+    "username": "",
+    "user_flags": "",
+    "name": "",
+    "id": "",
+    "icon": "",
+    "header": ""
+  }
+}
+```

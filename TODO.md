@@ -1,6 +1,5 @@
 # TODO
 ## Endpoints
-leaving this here for the future.
 when they're checked that just means they're implemented in easyHiven.js, people who just wanna use the list can disregard them >wO
 
 ### houses
@@ -20,7 +19,10 @@ when they're checked that just means they're implemented in easyHiven.js, people
 - [x] POST /rooms/:id/typing | starts typing in a room | d: { }
 - [x] POST /rooms/:id/call | start a call | d: { }
 - [x] POST /rooms/:id/call/decline | decline a call | d: { }
-- [ ] PUT /rooms/:id/recipients/:id | adds a user to a group DM
+- [x] PUT /rooms/:id/recipients/:id | adds a user to a group DM
+- [ ] DELETE /rooms/:id/recipients/:id | removes a user from a group DM
+- [ ] PATCH /rooms/:id/default-permissions | changes default permissions for a room | d: { allow: bitfield, deny: bitfield }
+- [ ] PATCH /rooms/:id | edits a room | d: { name: string }
 
 ### messages
 - [x] POST /rooms/:id/media_messages | creates an attachment message | d: form { file: named file }
@@ -28,8 +30,8 @@ when they're checked that just means they're implemented in easyHiven.js, people
 - [x] DELETE /rooms/:id/messages/:id | deletes a message
 - [x] PATCH /rooms/:id/messages/:id | edits a message | d: { content: string }
 - [ ] GET /rooms/:id/messages | gets messages from a room | d: ?before=id
-- [x] DELETE /houses/:id/rooms/:id/messages/:id | deletes a house message, (obsolete, not in easyHiven.js)
-- [x] POST /rooms/:id/messages/:id/ack | mark as read, probably, ack = short for acknowledge? | d: { }
+- [x] DELETE /houses/:id/rooms/:id/messages/:id | deletes a house message, (obsolete, you can use /rooms/:id/messages/:id)
+- [x] POST /rooms/:id/messages/:id/ack | mark as read, probably | d: { }
 
 ### users
 - [x] GET /users/:@username | gets an account
@@ -53,4 +55,591 @@ when they're checked that just means they're implemented in easyHiven.js, people
 - [ ] DELETE /relationships/@me/blocked/:id | unblocks a user
 - [ ] PUT relationships/@me/restricted/:id | restricts a user
 - [ ] DELETE relationships/@me/restricted/:id | unrestricts a user?
-- [ ] PUT /users/@me/settings/room_overrides/:id | changes room settings | d: { notification_preference: int{ 0: 'all', 1: 'mentions', 2: 'none' } }
+- [ ] PUT /users/@me/settings/room_overrides/:id | changes room settings | d: { notification_preference: int }
+
+## Websocket Events
+a list of all websocket events, WIP
+
+- [ ] [after connecting](#after-connecting)
+- [ ] [INIT_STATE](#init_state)
+- [ ] [HOUSE_JOIN](#house_join)
+- [ ] [HOUSE_MEMBERS_CHUNK](#house_members_chunk)
+- [ ] [TYPING_START](#typing_start)
+- [ ] [MESSAGE_CREATE](#message_create)
+- [ ] [MESSAGE_UPDATE](#message_update)
+- [ ] [MESSAGE_DELETE](#message_delete)
+- [ ] [ROOM_CREATE](#room_create)
+- [ ] [ROOM_UPDATE](#room_update)
+- [ ] [ROOM_DELETE](#room_delete)
+- [ ] [HOUSE_ENTITIES_UPDATE](#house_entities_update)
+- [ ] [HOUSE_MEMBER_UPDATE](#house_member_update)
+- [ ] [USER_UPDATE](#user_update)
+- [ ] [RELATIONSHIP_UPDATE](#relationship_update)
+- [ ] [PRESENCE_UPDATE](#presence_update)
+- [ ] [HOUSE_DOWN](#house_down)
+
+
+### after connecting
+```
+op: 1
+d: {
+  hbt_int: 30000
+}
+```
+
+### INIT_STATE
+```
+op: 0
+d: {
+  user: {
+    username: string,
+    user_flags: string,
+    name: string,
+    id: string,
+    icon: string,
+    header: string,
+    presence: string
+  },
+  settings: {
+    user_id: string,
+    theme: null,
+    room_overrides: {
+      id: { notification_preference: int }
+    },
+    onboarded: unknown,
+    enable_desktop_notifications: unknown
+  },
+  relationships: {
+    id: {
+      user_id: string,
+      user: {
+        username: string,
+        user_flags: string,
+        name: string,
+        id: string,
+        icon: string,
+        header: string,
+        presence: string
+      },
+      type: int,
+      last_updated_at: string
+    }
+  },
+  read_state: {
+    id: {
+      message_id: string,
+      mention_count: int
+    },
+  },
+  private_rooms: room[]
+  presences: {
+    id: {
+      username: string,
+      user_flags: string,
+      name: string,
+      id: string,
+      icon: string,
+      header: string,
+      presence: string
+    }
+  },
+  house_memberships: {
+    id: {
+      user_id: string,
+      user: {
+        username: string,
+        user_flags: string,
+        name: string,
+        id: string,
+        icon: string,
+        header: string,
+        presence: string
+      },
+      roles: array,
+      last_permission_update: string,
+      joined_at: string,
+      house_id: string
+    }
+  },
+  house_ids: string[]
+}
+```
+
+### HOUSE_JOIN
+```
+op: 0
+d: {
+  rooms: room[{
+    type: int,
+    recipients: null
+    position: int,
+    permission_overrides: bits,
+    owner_id: string,
+    name: string,
+    last_message_id: string,
+    id: string,
+    house_id: string,
+    emoji: object,
+    description: string,
+    default_permission_override: int
+  }],
+  roles: role[{
+    position: int,
+    name: string,
+    level: int,
+    id: string,
+    deny: bits,
+    color: string,
+    allow: bits
+  }],
+  owner_id: string,
+  name: string,
+  members: [{
+    user_id: string,
+    user: {
+      username: string,
+      user_flags: string,
+      name: string,
+      id: string,
+      icon: string,
+      header: string,
+      presence: string
+    },
+    roles: array,
+    last_permission_update: string,
+    joined_at: string,
+    house_id: string
+  }],
+  id: string,
+  icon: string,
+  entities: [{
+    type: int,
+    resource_pointers: [{
+      resource_type: string,
+      resource_id: string
+    }],
+    position: int,
+    name: string,
+    id: string
+  }],
+  default_permissions: int,
+  banner: string
+}
+```
+
+### HOUSE_MEMBERS_CHUNK
+```
+op: 0
+d: {
+  members: {
+    id: {
+      user_id: string,
+      user: {
+        username: string,
+        user_flags: string,
+        name: string,
+        id: string,
+        icon: string,
+        header: string,
+        presence: string
+      },
+      roles: array,
+      last_permission_update: string,
+      joined_at: string,
+      house_id: string
+    }
+  },
+  house_id: string
+}
+```
+
+### TYPING_START
+```
+op: 0
+d: {
+  timestamp: int,
+  room_id: string,
+  house_id: string,
+  author_id: string
+}
+```
+
+### MESSAGE_CREATE
+```
+op: 0
+d: {
+  timestamp: int,
+  room_id: string,
+  mentions: [{
+    username: string,
+    user_flags: string,
+    name: string,
+    id: string,
+    icon: string,
+    header: string,
+    presence: string,
+    bot: boolean
+  }],
+  member: {
+    user_id: string,
+    user: {
+      username: string,
+      user_flags: string,
+      name: string,
+      id: string,
+      icon: string,
+      header: string,
+      presence: string
+    },
+    roles: array,
+    last_permission_update: string,
+    joined_at: string,
+    house_id: string
+  },
+  id: string,
+  house_id: string,
+  exploding_age: int,
+  exploding: boolean,
+  device_id: string,
+  content: string,
+  bucket: int,
+  author_id: string,
+  author: {
+    username: string,
+    user_flags: string,
+    name: string,
+    id: string,
+    icon: string,
+    header: string,
+    presence: string
+  }
+  attachment: {
+    media_url: string,
+    filename: string,
+    dimensions: {
+      width: int,
+      type: string,
+      height: int
+    }
+  }
+}
+```
+
+### MESSAGE_UPDATE
+```
+op: 0
+d: {
+  type: int,
+  timestamp: string,
+  room_id: string,
+  metadata: unknown,
+  mentions: [{
+    username: string,
+    user_flags: string,
+    name: string,
+    id: string,
+    icon: string,
+    header: string,
+    presence: string
+  }],
+  id: string,
+  house_id: string,
+  exploding_age: int,
+  exploding: boolean,
+  embed: object,
+  edited_at: string,
+  device_id: string,
+  content: string,
+  bucket: int,
+  author_id: string,
+  attachment: {
+    media_url: string,
+    filename: string,
+    dimensions: {
+      width: int,
+      type: string,
+      height: int
+    }
+  }
+}
+```
+
+### MESSAGE_DELETE
+```
+op: 0
+d: {
+  room_id: string,
+  message_id: string,
+  house_id: string
+}
+```
+
+### ROOM_CREATE
+```
+op: 0
+d: {
+  type: int,
+  position: int,
+  name: string,
+  id: string,
+  house_id: string
+}
+```
+
+### ROOM_UPDATE
+```
+op: 0
+d: {
+  type: int,
+  position: int,
+  name: string,
+  id: string,
+  house_id: string,
+  emoji: object,
+  description: string
+}
+```
+
+### ROOM_DELETE
+```
+op: 0
+d: {
+  id: '191527742867501935',
+  house_id: '182410583881021247'
+}
+```
+
+### HOUSE_ENTITIES_UPDATE
+```
+op: 0
+d: {
+  house_id: '182410583881021247',
+  entities: [{
+    type: int,
+    resource_pointers: [{
+      resource_type: string,
+      resource_id: string
+    }],
+    position: int,
+    name: string,
+    id: string
+  }]
+}
+```
+
+### HOUSE_MEMBER_UPDATE
+```
+op: 0
+d: {
+  user_id: string,
+  user: {
+    website: string,
+    username: string,
+    user_flags: int,
+    name: string,
+    location: string,
+    id: string,
+    icon: string,
+    header: string,
+    email_verified: boolean,
+    bot: boolean,
+    bio: string
+  },
+  roles: object[],
+  presence: string,
+  last_permission_update: unknown,
+  joined_at: string,
+  id: string,
+  house_id: string
+}
+```
+
+### USER_UPDATE
+```
+op: 0
+d: {
+  website: string,
+  username: string,
+  user_flags: int,
+  name: string,
+  location: string,
+  id: string,
+  icon: string,
+  header: string,
+  email_verified: boolean,
+  bot: boolean,
+  bio: string
+}
+```
+
+### RELATIONSHIP_UPDATE
+```
+op: 0
+d: {
+  user: {
+    website: string,
+    username: string,
+    user_flags: int,
+    name: string,
+    location: string,
+    id: string,
+    icon: string,
+    bio: string
+  },
+  type: int,
+  recipient_id: string,
+  id: string
+}
+```
+
+### PRESENCE_UPDATE
+```
+op: 0
+d: {
+  username: string,
+  user_flags: string,
+  name: string,
+  id: string,
+  icon: string,
+  header: string,
+  presence: string
+}
+```
+
+### HOUSE_DOWN
+```
+op: 0
+d: {
+  unavailable: boolean,
+  house_id: string
+}
+```
+
+### HOUSE_LEAVE
+```
+op: 0
+d: {
+  id: string,
+  house_id: string
+}
+```
+
+
+## Permissions
+all the permission bits in a row, I will probably make a class for this at some point;
+- SEND_MESSAGES = 1 << 0,
+- READ_MESSAGES = 1 << 1,
+- ADMINISTRATOR = 1 << 2,
+- MODERATE_ROOM = 1 << 3,
+- EVICT_MEMBERS = 1 << 4,
+- KICK_MEMBERS = 1 << 5,
+- ATTACH_MEDIA = 1 << 6,
+- MANAGE_ROLES = 1 << 7,
+- MANAGE_BILLING = 1 << 8,
+- MANAGE_BOTS = 1 << 9,
+- MANAGE_INTEGRATIONS = 1 << 10,
+- MANAGE_ROOMS = 1 << 11,
+- START_PORTAL = 1 << 12,
+- STREAM_TO_PORTAL = 1 << 13,
+- TAKEOVER_PORTAL = 1 << 14,
+- POST_TO_FEED = 1 << 15,
+- MANAGE_USER_OVERRIDES = 1 << 16,
+- CREATE_INVITES = 1 << 17,
+- MANAGE_INVITES = 1 << 18
+
+## Future Updates
+- roles
+- members
+
+## Data Structures
+
+### user
+```
+{
+  username: string,
+  user_flags: string,
+  name: string,
+  id: string,
+  icon: string,
+  header: string,
+  presence: string
+}
+```
+
+### room
+```
+{
+  type: int,
+  recipients: [{
+    username: string,
+    user_flags: string,
+    name: string,
+    id: string,
+    icon: string,
+    header: string,
+    presence: string
+  }],
+  position: int,
+  permission_overrides: bits,
+  owner_id: string,
+  name: string,
+  last_message_id: string,
+  id: string,
+  house_id: string,
+  emoji: object,
+  description: string,
+  default_permission_override: int
+}
+```
+
+### member
+```
+{
+  user_id: string,
+  user: {
+    username: string,
+    user_flags: string,
+    name: string,
+    id: string,
+    icon: string,
+    header: string,
+    presence: string
+  },
+  roles: array,
+  last_permission_update: string,
+  joined_at: string,
+  house_id: string
+}
+```
+
+### role
+```
+{
+  position: int,
+  name: string,
+  level: int,
+  id: string,
+  deny: int,
+  color: string,
+  allow: int
+}
+```
+
+### entity
+```
+{
+  type: int,
+  resource_pointers: [{
+    resource_type: string,
+    resource_id: string
+  }],
+  position: int,
+  name: string,
+  id: string
+}
+```
+
+### Type Integer Meanings
+- relationships.type: { 1: 'outgoing request', 2: 'incoming request', 3: 'friends', 4: 'restricted', 5: 'blocked' }
+- notification_preference: { 0: 'all', 1: 'mentions', 2: 'none' }
+- room types { 0: 'House', 1: 'DM', 2: 'Group'}

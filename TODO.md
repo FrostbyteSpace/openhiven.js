@@ -526,7 +526,7 @@ d: {
 
 ### HOUSE_MEMBER_JOIN
 ```
-op: 1
+op: 0
 d: {
   user: {
     username: string,
@@ -545,7 +545,7 @@ d: {
 
 ### HOUSE_MEMBER_LEAVE
 ```
-op: 1
+op: 0
 d: {
   user: {
     username: string,

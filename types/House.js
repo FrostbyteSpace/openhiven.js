@@ -13,7 +13,7 @@ module.exports = class House {
     this.banner = data.banner;
     this.rooms = new Collection();
     this.roles = new Collection();
-    this.members = new Collection();
+    // this.members = new Collection();
     this.categories = new Collection();
     this.client = client;
 
@@ -23,18 +23,17 @@ module.exports = class House {
         this.roles.set(r.id, role);
       }
     }
-    if (data.members) {
-      for (let m of data.members) {
-        let member = new Member(client, {...m, house: this});
-        this.members.set(member.id, member);
-        if (!client.users.has(member.id)) client.users.set(member.id, member.user);
-      }
-    }
+    // if (data.members) {
+    //   for (let m of data.members) {
+    //     let member = new Member(client, {...m, house: this});
+    //     this.members.set(member.id, member);
+    //     if (!client.users.has(member.id)) client.users.set(member.id, member.user);
+    //   }
+    // }
     if (data.rooms) {
       for (let r of data.rooms) {
         let room = new Room(client, {...r, house: this});
         this.rooms.set(room.id, room);
-        client.rooms.set(room.id, room);
       }
     }
     if (data.entities) {
@@ -66,7 +65,7 @@ module.exports = class House {
     return false;
   }
 
-  async createRoom(name, parent) {
+  async createRoom(name, parent=(this.categories.find(cat=>cat.name=='Rooms') || this.categories.first()).id ) {
     parent = (typeof parent == 'string' ? parent : parent.id);
     let res = await this.client.axios.post(`/houses/${this.id}/rooms`, {
       name: name,

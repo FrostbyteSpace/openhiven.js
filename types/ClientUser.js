@@ -2,98 +2,29 @@ const User = require('./User.js');
 const Collection = require('../djs-collection');
 
 module.exports = class ClientUser extends User {
-  constructor(client, data={}, friends) {
-    super(client, data);
+  constructor(client, data={user:{}}) {
+    super(client, data.user);
 
-    // this.friends = new Collection();
-    // if (friends) {
-    //   for (let f in friends) {
-    //     let friend = new User(client, friends[f].data);
-    //     client.users.set(f, friend);
-    //     this.friends.set(f, friend);
-    //   }
-    // }
-    // relationships.type: { 1: 'outgoing request', 2: 'incoming request', 3: 'friends', 4: 'restricted', 5: 'blocked' }
-  }
-
-
-
-  async editName(name) {
-    let res = await this.client.axios.patch(`/users/@me`, {
-      name: name
-    });
-    if (res.data.success) {
-      this.name = name;
-      return this;
+    this.relationships = new Collection();
+    if (data.relationships) {
+      for (let r in data.relationships) {
+        let relationship = new User(client, data.relationships[r].user);
+        relationship.relationship_type = data.relationships[r].type;
+        this.relationships.set(r, relationship);
+      }
     }
-    return false;
   }
 
-  async editBio(bio) {
-    let res = await this.client.axios.patch(`/users/@me`, {
-      bio: bio
-    });
-    if (res.data.success) {
-      this.bio = bio;
-      return this;
-    }
-    return false;
-  }
 
-  async editIcon(icon) {
-    let res = await this.client.axios.patch(`/users/@me`, {
-      icon: icon
-    });
-    if (res.data.success) {
-      this.icon = res.data.data.icon;
-      return this;
-    }
-    return false;
-  }
-
-  async editHeader(header) {
-    let res = await this.client.axios.patch(`/users/@me`, {
-      header: header
-    });
-    if (res.data.success) {
-      this.header = res.data.data.header;
-      return this;
-    }
-    return false;
-  }
-
-  async editWebsite(website) {
-    let res = await this.client.axios.patch(`/users/@me`, {
-      website: website
-    });
-    if (res.data.success) {
-      this.website = website;
-      return this;
-    }
-    return false;
-  }
-
-  async editLocation(location) {
-    let res = await this.client.axios.patch(`/users/@me`, {
-      location: location
-    });
-    if (res.data.success) {
-      this.location = location;
-      return this;
-    }
-    return false;
-  }
+  get friends() { return this.relationships.filter(r => r.relationship_type===3)}
+  get blocked() { return this.relationships.filter(r => r.relationship_type===5)}
+  get restricted() { return this.relationships.filter(r => r.relationship_type===4)}
+  get friend_requests() { return this.relationships.filter(r => [1,2].includes(r.relationship_type))}
 
   async editAccount(data) {
     let res = await this.client.axios.patch(`/users/@me`, data);
     if (res.data.success) {
-      let d = res.data.data;
-      this.name = d.name;
-      this.bio = d.bio;
-      this.icon = d.icon;
-      this.header = d.header;
-      this.website = d.website;
-      this.location = d.location;
+      super._update(res.data.data);
       return this;
     }
     return false;

@@ -1,23 +1,26 @@
 const User = require('./User.js');
 const Attachment = require('./Attachment.js')
 const Collection = require('../djs-collection');
+const Member = require('./Member.js');
 
 module.exports = class Message {
   constructor(client, data={}) {
     this.id = data.id;
     this.content = data.content;
     this.room = client.rooms.get(data.room_id);
-    this.author = client.users.get(data.author_id);
+    this.author = new User(client, data.author);
     this.mentions = new Collection();
     if (data.attachment) this.attachment = new Attachment(client, data.attachment);
     if (data.house_id) this.house = client.houses.get(data.house_id);
-    if (data.member && this.house) this.member = this.house.members.get(data.member.user_id);
+    if (data.member && this.house) this.member = new Member(client, data.member);
     this.timestamp = data.timestamp;
     this.client = client;
 
-    for (let m in data.mentions) {
-      let mention = (this.house ? this.house.members.get(m) : null) || client.users.get(m) || new User(client, data.mentions[m]);
-      this.mentions.set(m, mention);
+    if (data.mentions) {
+      for (let m of data.mentions) {
+        let mention = new User(client, m);
+        this.mentions.set(mention.id, mention);
+      }
     }
   }
 

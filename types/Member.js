@@ -7,7 +7,7 @@ module.exports = class Member {
     this.roles = new Collection();
     this.presence = data.presence;
     this.joined = data.joined_at;
-    this.user = client.users.get(data.user.id) || new User(client, data.user);
+    this.user = new User(client, data.user);
     this.house = data.house || client.houses.get(data.house_id);
     this.client = client;
 
@@ -17,4 +17,14 @@ module.exports = class Member {
       }
     }
   }
+
+  // _update (data) {
+  //   for (let r of this.roles.array()) {
+  //     if (!data.roles.has(r.id)) this.roles.delete(r.id);
+  //   }
+  //   for (let r of data.roles) {
+  //     if (!this.roles.has(r.id)) this.roles.set(r.id, this.house.roles.get(r.id));
+  //   }
+  //   this.presence = data.presence;
+  // }
 }

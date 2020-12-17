@@ -22,8 +22,7 @@ module.exports = class Room {
 
     if (this.recipients) {
       for (let r in data.recipients) {
-        let rec = data.recipients[r];
-        let recipient = client.users.get(r) || new User(client, rec);
+        let recipient = new User(client, data.recipients[r]);
         this.recipients.set(r, recipient);
       }
     }

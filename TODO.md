@@ -34,7 +34,7 @@ when they're checked that just means they're implemented in easyHiven.js, people
 - [x] POST /rooms/:id/messages/:id/ack | mark as read, probably | d: { }
 
 ### users
-- [x] GET /users/:@username | gets an account
+- [x] GET /users/:username | gets an account
 - [ ] GET /relationships/:id/mutual-friends | gets your mutual friends with an account
 
 ### \@me
@@ -60,9 +60,9 @@ when they're checked that just means they're implemented in easyHiven.js, people
 ## Websocket Events
 a list of all websocket events, WIP
 
-- [ ] [after connecting](#after-connecting)
-- [ ] [INIT_STATE](#init_state)
-- [ ] [HOUSE_JOIN](#house_join)
+- [x] [after connecting](#after-connecting)
+- [x] [INIT_STATE](#init_state)
+- [x] [HOUSE_JOIN](#house_join)
 - [ ] [HOUSE_MEMBERS_CHUNK](#house_members_chunk)
 - [ ] [TYPING_START](#typing_start)
 - [ ] [MESSAGE_CREATE](#message_create)
@@ -520,6 +520,44 @@ d: {
 op: 0
 d: {
   id: string,
+  house_id: string
+}
+```
+
+### HOUSE_MEMBER_JOIN
+```
+op: 1
+d: {
+  user: {
+    username: string,
+    user_flags: string,
+    name: string,
+    id: string,
+    icon: string,
+    header: string
+  },
+  roles: [],
+  joined_at: string,
+  house_id: string
+}
+
+```
+
+### HOUSE_MEMBER_LEAVE
+```
+op: 1
+d: {
+  user: {
+    username: string,
+    user_flags: string,
+    name: string,
+    id: string,
+    icon: string,
+    header: string
+  },
+  roles: [],
+  presence: string,
+  joined_at: string,
   house_id: string
 }
 ```

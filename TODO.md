@@ -20,9 +20,9 @@ when they're checked that just means they're implemented in easyhiven.js, people
 - [x] POST /rooms/:id/call | start a call | d: { }
 - [x] POST /rooms/:id/call/decline | decline a call | d: { }
 - [x] PUT /rooms/:id/recipients/:id | adds a user to a group DM
-- [ ] DELETE /rooms/:id/recipients/:id | removes a user from a group DM
+- [x] DELETE /rooms/:id/recipients/:id | removes a user from a group DM
 - [ ] PATCH /rooms/:id/default-permissions | changes default permissions for a room | d: { allow: bitfield, deny: bitfield }
-- [ ] PATCH /rooms/:id | edits a room | d: { name: string }
+- [x] PATCH /rooms/:id | edits a room | d: { name: string }
 
 ### messages
 - [x] POST /rooms/:id/media_messages | creates an attachment message | d: form { file: named file }
@@ -46,16 +46,16 @@ when they're checked that just means they're implemented in easyhiven.js, people
 - [x] POST /users/@me/rooms | adds a group DM room | d: { recipients: string[] }
 - [x] DELETE /users/@me/houses/:id | leaves a house
 - [x] DELETE /users/@me/rooms/:id | leaves a group DM
-- [ ] DELETE /relationships/@me/friends/:id | unfriends someone
+- [x] DELETE /relationships/@me/friends/:id | unfriends someone
 - [ ] GET /relationships/@me/friends | get your friends
-- [ ] POST /relationships/@me/friend-requests | sends a friend request to someone | d: { user_id: string }
-- [ ] DELETE /relationships/@me/friend-requests/:id | cancels a friend request
+- [x] POST /relationships/@me/friend-requests | sends a friend request to someone | d: { user_id: string }
+- [x] DELETE /relationships/@me/friend-requests/:id | cancels a friend request
 - [ ] GET /relationships/@me/friend-requests | get your current friend requests
-- [ ] PUT /relationships/@me/blocked/:id | blocks a user
-- [ ] DELETE /relationships/@me/blocked/:id | unblocks a user
-- [ ] PUT relationships/@me/restricted/:id | restricts a user
-- [ ] DELETE relationships/@me/restricted/:id | unrestricts a user?
-- [ ] PUT /users/@me/settings/room_overrides/:id | changes room settings | d: { notification_preference: int }
+- [x] PUT /relationships/@me/blocked/:id | blocks a user
+- [x] DELETE /relationships/@me/blocked/:id | unblocks a user
+- [x] PUT relationships/@me/restricted/:id | restricts a user
+- [x] DELETE relationships/@me/restricted/:id | unrestricts a user?
+- [x] PUT /users/@me/settings/room_overrides/:id | changes room settings | d: { notification_preference: int }
 
 ## Websocket Events
 a list of all websocket events

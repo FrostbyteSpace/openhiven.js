@@ -34,9 +34,32 @@ module.exports = class HouseRoom extends BaseRoom {
     return false;
   }
 
-  async addUser(user) {
+  async add(user) {
     if (user instanceof User || user instanceof Member) user = user.id;
     let res = await this.client.axios.put(`/rooms/${this.id}/recipients/${user}`);
+    if ([ 200, 204 ].includes(res.status)) {
+      return true;
+    }
+    return false;
+  }
+
+  async remove(user) {
+    if (user instanceof User || user instanceof Member) user = user.id;
+    let res = await this.client.axios.delete(`/rooms/${this.id}/recipients/${user}`);
+    if ([ 200, 204 ].includes(res.status)) {
+      return true;
+    }
+    return false;
+  }
+
+  async edit(name) {
+    let res = await this.client.axios.patch(`/rooms/${this.id}`, {
+      name: name,
+    });
+    if (res.data.success) {
+      this.name = name;
+    }
+    return false;
   }
 
   async leave() {

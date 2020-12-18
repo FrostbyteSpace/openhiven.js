@@ -1,4 +1,5 @@
 const User = require('./User.js');
+const Member = require('./Member.js');
 const Message = require('./Message.js');
 const Collection = require('../djs-collection');
 

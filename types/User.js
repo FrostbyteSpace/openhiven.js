@@ -28,6 +28,66 @@ module.exports = class User {
     return false;
   }
 
+  async unfriend() {
+    if (!this.client.user.friends.has(this.id)) return;
+    const res = await this.client.axios.delete(`/relationships/@me/friends/${this.id}`);
+    if ([ 200, 204 ].includes(res.status)) {
+      return true;
+    }
+    return false;
+  }
+
+  async friend() {
+    const res = await this.client.axios.post(`/relationships/@me/friend-requests`, {
+      user_id: this.id,
+    });
+    if ([ 200, 204 ].includes(res.status)) {
+      return true;
+    }
+    return false;
+  }
+
+  async block() {
+    const res = await this.client.axios.put(`/relationships/@me/blocked/${this.id}`);
+    if ([ 200, 204 ].includes(res.status)) {
+      return true;
+    }
+    return false;
+  }
+
+  async unblock() {
+    const res = await this.client.axios.delete(`/relationships/@me/blocked/${this.id}`);
+    if ([ 200, 204 ].includes(res.status)) {
+      return true;
+    }
+    return false;
+  }
+
+  async restrict() {
+    const res = await this.client.axios.put(`/relationships/@me/restricted/${this.id}`);
+    if ([ 200, 204 ].includes(res.status)) {
+      return true;
+    }
+    return false;
+  }
+
+  async unrestrict() {
+    const res = await this.client.axios.delete(`/relationships/@me/restricted/${this.id}`);
+    if ([ 200, 204 ].includes(res.status)) {
+      return true;
+    }
+    return false;
+  }
+
+  async cancel() {
+    if (!this.client.user.friends.has(this.id)) return;
+    const res = await this.client.axios.delete(`/relationships/@me/friend-requests/${this.id}`);
+    if ([ 200, 204 ].includes(res.status)) {
+      return true;
+    }
+    return false;
+  }
+
 
   _update(data) {
     this.username = data.username;

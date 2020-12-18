@@ -45,4 +45,14 @@ module.exports = class Room {
     }
     return false;
   }
+
+  async settings(options) {
+    let res = await this.client.axios.put(`/users/@me/settings/room_overrides/${this.id}`, {
+      notification_preference: options.notifications,
+    });
+    if ([ 200, 204 ].includes(res.status)) {
+      return true;
+    }
+    return false;
+  }
 }

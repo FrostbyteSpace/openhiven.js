@@ -59,7 +59,7 @@ module.exports = class Bot extends Client {
               this._log(`loaded ${command.name}`.brightGreen, 1);
             } catch (e) {
               this._log(`failed loading ${file}!`.brightRed, 1);
-              this._log(e, 2)
+              this._log(e, 2);
             }
           }
         }

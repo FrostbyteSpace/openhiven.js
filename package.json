@@ -1,5 +1,5 @@
 {
-  "name": "easyHiven.js",
+  "name": "easyhiven.js",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -16,6 +16,7 @@
     "axios": "^0.21.0",
     "colors": "^1.4.0",
     "form-data": "^3.0.0",
-    "ws": "^7.4.0"
+    "ws": "^7.4.0",
+    "xregexp": "^4.4.1"
   }
 }

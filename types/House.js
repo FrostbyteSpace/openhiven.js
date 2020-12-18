@@ -1,4 +1,4 @@
-const Room = require('./Room.js');
+const HouseRoom = require('./HouseRoom.js');
 const Member = require('./Member.js');
 const Role = require('./Role.js');
 const Category = require('./Category.js');
@@ -32,7 +32,7 @@ module.exports = class House {
     // }
     if (data.rooms) {
       for (let r of data.rooms) {
-        let room = new Room(client, {...r, house: this});
+        let room = new HouseRoom(client, {...r, house: this});
         this.rooms.set(room.id, room);
       }
     }
@@ -72,7 +72,7 @@ module.exports = class House {
       parent_entity_id: parent
     });
     if (res.data.success) {
-      let room = new Room(this.client, res.data.data);
+      let room = new HouseRoom(this.client, res.data.data);
       this.rooms.set(room.id, room);
       this.client.rooms.set(room.id, room);
     }

@@ -1,6 +1,6 @@
 # TODO
 ## Endpoints
-when they're checked that just means they're implemented in easyHiven.js, people who just wanna use the list can disregard them >wO
+when they're checked that just means they're implemented in easyhiven.js, people who just wanna use the list can disregard them >wO
 
 ### houses
 - [x] POST /houses | creates a house | d: { name: string, icon: base64? }
@@ -30,17 +30,17 @@ when they're checked that just means they're implemented in easyHiven.js, people
 - [x] DELETE /rooms/:id/messages/:id | deletes a message
 - [x] PATCH /rooms/:id/messages/:id | edits a message | d: { content: string }
 - [ ] GET /rooms/:id/messages | gets messages from a room | d: ?before=id
-- [x] DELETE /houses/:id/rooms/:id/messages/:id | deletes a house message, (obsolete, you can use /rooms/:id/messages/:id)
+- [x] DELETE /houses/:id/rooms/:id/messages/:id | deletes a house message, (obsolete imo, you can use /rooms/:id/messages/:id)
 - [x] POST /rooms/:id/messages/:id/ack | mark as read, probably | d: { }
 
 ### users
 - [x] GET /users/:username | gets an account
-- [ ] GET /relationships/:id/mutual-friends | gets your mutual friends with an account
+- [x] GET /relationships/:id/mutual-friends | gets your mutual friends with an account
 
 ### \@me
 - [x] PATCH /users/@me | edits your account | d: { bio: string, name: string, icon: base64?, header: base64?, location: string, website: string }
-- [ ] GET /users/@me | gets your account
-- [ ] GET /streams/@me/mentions | gets your mentions
+- [x] GET /users/@me | gets your account
+- [x] GET /streams/@me/mentions | gets your mentions
 - [ ] GET /streams/@me/feed | gets your feed
 - [x] POST /users/@me/rooms | adds a DM room | d: { recipient: string }
 - [x] POST /users/@me/rooms | adds a group DM room | d: { recipients: string[] }

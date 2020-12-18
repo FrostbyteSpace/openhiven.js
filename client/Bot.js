@@ -1,7 +1,7 @@
 const Client = require('./Client.js');
 const Command = require('../lib/Command.js');
-const Util = require('../lib/Util.js');
 
+const XRegExp = require('xregexp');
 const Collection = require('../djs-collection');
 const fs = require('fs');
 const Path = require('path');
@@ -36,31 +36,36 @@ module.exports = class Bot extends Client {
 
 
   _loadCommands(commands) {
-    if (commands instanceof Command) {
-      this._commands.set(commands.name, commands);
-    }
-    else if (typeof commands == 'array') {
-      for (command of commands) {
-        this._loadCommands(command);
-      }
-    }
-    else if (typeof commands == 'string') {
-      let path = (Path.isAbsolute(commands) ? commands : Path.join(process.cwd(), commands));
-      if (!fs.existsSync(path)) return;
-      var files = fs.readdirSync(path);
-      for (var file of files) {
-        file = Path.join(path, file);
-        if (fs.lstatSync(file).isFile()) {
-          this._log(`loading ${file}`.gray);
-          var command = require(file);
-          this._commands.set(command.name, command);
+    switch (commands.constructor) {
+      case Command:
+        this._commands.set(commands.name, commands);
+        break;
+      case Array:
+        for (command of commands) {
+          this._loadCommands(command);
         }
-      }
-    }
-    else {
-      var e = new Error('options.commands can only be a string or a EasyHiven.Command, or an array of either of those.');
-      e.name = 'TypeError';
-      return e;
+        break;
+      case String:
+        let path = (Path.isAbsolute(commands) ? commands : Path.join(process.cwd(), commands));
+        if (!fs.existsSync(path)) return;
+        var files = fs.readdirSync(path);
+        for (var file of files) {
+          file = Path.join(path, file);
+          if (fs.lstatSync(file).isFile()) {
+            let command;
+            try {
+              command = require(file);
+              this._commands.set(command.name, command);
+              this._log(`loaded ${command.name}`.brightGreen, 1);
+            } catch (e) {
+              this._log(`failed loading ${file}!`.brightRed, 1);
+              this._log(e, 2)
+            }
+          }
+        }
+        break;
+      default:
+        var e = new Error('options.commands can only be a string or a EasyHiven.Command, or an array of those.');
     }
   }
 
@@ -76,13 +81,13 @@ module.exports = class Bot extends Client {
 
 
   async _OnInit() {
-    this._log('ready!'.brightGreen);
+    this._log('ready!'.brightGreen, 1);
   }
 
 
 
   async _OnMessage(message) {
-    const prefixRegex = new RegExp(`^(<@!?${this.user.id}>|${Util.EscapeRegex(this.prefix)})\\s*`);
+    const prefixRegex = XRegExp(`^(<@!?${this.user.id}>|${XRegExp.escape(this.prefix)})\\s*`);
   	if (!prefixRegex.test(message.content)) return;
   	let [, prefix] = message.content.match(prefixRegex);
 
@@ -95,7 +100,8 @@ module.exports = class Bot extends Client {
       let res = await command.execute(message, args);
       if (typeof res == 'string') message.room.send(res);
     } catch (e) {
-      console.log(e);
+      this._log(`An error occured trying to execute command '${command.name}'`, 1);
+      this._log(e, 2);
     }
   }
 

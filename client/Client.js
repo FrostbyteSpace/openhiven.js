@@ -8,7 +8,9 @@ const ClientUser = require('../types/ClientUser.js');
 const House = require('../types/House.js');
 const Member = require('../types/Member.js');
 const Message = require('../types/Message.js');
-const Room = require('../types/Room.js');
+const DMRoom = require('../types/DMRoom.js');
+const GroupRoom = require('../types/GroupRoom.js');
+const HouseRoom = require('../types/HouseRoom.js');
 const User = require('../types/User.js');
 const Invite = require('../types/Invite.js');
 
@@ -97,7 +99,13 @@ module.exports = class Client extends EventEmitter {
 
           this.user = new ClientUser(this, d);
           for (let room of d.private_rooms) {
-            this.privateRooms.set(room.id, new Room(this, room));
+            if (room.type === 1) {
+              this.privateRooms.set(room.id, new DMRoom(this, room));
+            }
+            else if (room.type === 2) {
+              this.privateRooms.set(room.id, new GroupRoom(this, room));
+            }
+            else { return }
           }
           return this.emit('init');
         }
@@ -105,11 +113,13 @@ module.exports = class Client extends EventEmitter {
         case 'ROOM_CREATE': {
           let room;
           if (d.house_id && this.houses.has(d.house_id)) {
-            room = new Room(this, d);
+            room = new HouseRoom(this, d);
             this.houses.get(d.house_id).rooms.set(room.id, room);
           }
           else {
-            room = new Room(this, d);
+            if (d.type === 1) { room = new DMRoom(this, d) }
+            else if (d.type === 2) { room = new GroupRoom(this, d) }
+            else { return }
             this.privateRooms.set(room.id, room);
           }
           return this.emit('room_create', room);
@@ -120,14 +130,16 @@ module.exports = class Client extends EventEmitter {
           if (d.house_id && this.houses.has(d.house_id)) {
             room = this.houses.get(d.house_id).rooms.get(d.id);
             if (!room) {
-              room = new Room(this, d);
+              room = new HouseRoom(this, d);
               this.houses.get(d.house_id).rooms.set(room.id, room);
             }
           }
           else {
             room = this.privateRooms.get(d.id);
             if (!room) {
-              room = new Room(this, d);
+              if (d.type === 1) { room = new DMRoom(this, d) }
+              else if (d.type === 2) { room = new GroupRoom(this, d) }
+              else { return }
               this.privateRooms.set(room.id, room);
             }
           }
@@ -281,7 +293,9 @@ module.exports = class Client extends EventEmitter {
     }
     let res = await this.axios.post(`/users/@me/rooms`, data);
     if (res.data.success) {
-      let room = new Room(this, res.data.data);
+      if (d.type === 1) { room = new DMRoom(this, res.data.data) }
+      else if (d.type === 2) { room = new GroupRoom(this, res.data.data) }
+      else { return }
       this.privateRooms.set(room.id, room);
       return room;
     }
@@ -308,7 +322,7 @@ module.exports = class Client extends EventEmitter {
 
 
 
-  _log(msg) {
-    if (this.logging) return console.log(msg);
+  _log(msg, level) {
+    if (level <= this.logging) return console.log(msg);
   }
 }

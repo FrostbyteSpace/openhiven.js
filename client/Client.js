@@ -267,7 +267,7 @@ module.exports = class Client extends EventEmitter {
         rooms.set(room.id, room);
       }
       return rooms;
-    }, new Collection());
+    }, this.privateRooms);
   }
 
 

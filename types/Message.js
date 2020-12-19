@@ -57,7 +57,7 @@ module.exports = class Message {
     this.room = this.client.rooms.get(data.room_id);
     this.author = new User(this.client, data.author);
     if (data.attachment) this.attachment = new Attachment(this.client, data.attachment);
-    if (data.house_id) this.house = client.houses.get(data.house_id);
+    if (data.house_id) this.house = this.client.houses.get(data.house_id);
     if (data.member && this.house) this.member = new Member(this.client, data.member);
     this.timestamp = data.timestamp;
 

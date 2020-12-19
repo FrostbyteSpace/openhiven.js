@@ -11,6 +11,8 @@ module.exports = class Bot extends Client {
     options.type = options.type || 'bot';
     super(options);
 
+    this.createTime = Date.now();
+
     this.prefix = options.prefix;
     this.owner = options.owner;
 
@@ -19,8 +21,8 @@ module.exports = class Bot extends Client {
       this._loadCommands(options.commands);
     }
 
-    this.onMessage = options.on_message || this._OnMessage;
-    this.onInit = options.on_init || this._OnInit;
+    this.onMessage = options.on_message || Bot._OnMessage;
+    this.onInit = options.on_init || Bot._OnInit;
 
     this.on('message', message => {
       message.client = this;
@@ -29,7 +31,7 @@ module.exports = class Bot extends Client {
     this.once('init', async () => {
       if (this.options.type == 'user') this.owner = this.user;
       if (typeof this.owner == 'string') this.owner = this.users.resolve(this.owner);
-      this.onInit();
+      this.onInit(this);
     });
   }
 
@@ -46,15 +48,14 @@ module.exports = class Bot extends Client {
         }
         break;
       case String:
-        let path = (Path.isAbsolute(commands) ? commands : Path.join(process.cwd(), commands));
+        const path = (Path.isAbsolute(commands) ? commands : Path.join(process.cwd(), commands));
         if (!fs.existsSync(path)) return;
         var files = fs.readdirSync(path);
         for (var file of files) {
           file = Path.join(path, file);
           if (fs.lstatSync(file).isFile()) {
-            let command;
             try {
-              command = require(file);
+              const command = require(file);
               this._commands.set(command.name, command);
               this._log(`loaded ${command.name}`.brightGreen, 1);
             } catch (e) {
@@ -80,16 +81,18 @@ module.exports = class Bot extends Client {
 
 
 
-  async _OnInit() {
-    this._log('ready!'.brightGreen, 1);
+  static async _OnInit() {
+    const file = await (async () => fs.readFileSync('/home/cyber/Documents/code/hiven/easyhiven.js/hiven.ascii', 'utf8'))();
+    this.connectTime = Date.now() - this.createTime;
+    this._log(`${file.white}Connected in ${(this.connectTime+'ms').brightGreen}`, 1);
   }
 
 
 
-  async _OnMessage(message) {
+  static async _OnMessage(message) {
     const prefixRegex = XRegExp(`^(<@!?${this.user.id}>|${XRegExp.escape(this.prefix)})\\s*`);
   	if (!prefixRegex.test(message.content)) return;
-  	let [, prefix] = message.content.match(prefixRegex);
+  	const [, prefix] = message.content.match(prefixRegex);
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
@@ -97,7 +100,7 @@ module.exports = class Bot extends Client {
     if (!command) return;
 
     try {
-      let res = await command.execute(message, args);
+      const res = await command.execute(message, args);
       if (typeof res == 'string') message.room.send(res);
     } catch (e) {
       this._log(`An error occured trying to execute command '${command.name}'`, 1);

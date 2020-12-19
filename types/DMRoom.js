@@ -11,14 +11,14 @@ module.exports = class DMRoom extends BaseRoom {
 
     if (this.recipients) {
       for (let r in data.recipients) {
-        let recipient = new User(client, data.recipients[r]);
+        const recipient = new User(client, data.recipients[r]);
         this.recipients.set(r, recipient);
       }
     }
   }
 
   async call() {
-    let res = await this.client.axios.post(`/rooms/${this.id}/call`);
+    const res = await this.client.axios.post(`/rooms/${this.id}/call`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
     }
@@ -26,7 +26,7 @@ module.exports = class DMRoom extends BaseRoom {
   }
 
   async declineCall() {
-    let res = await this.client.axios.post(`/rooms/${this.id}/call/decline`);
+    const res = await this.client.axios.post(`/rooms/${this.id}/call/decline`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
     }
@@ -35,6 +35,6 @@ module.exports = class DMRoom extends BaseRoom {
 
   async addUser(user) {
     if (user instanceof User || user instanceof Member) user = user.id;
-    let res = await this.client.axios.put(`/rooms/${this.id}/recipients/${user}`);
+    const res = await this.client.axios.put(`/rooms/${this.id}/recipients/${user}`);
   }
 }

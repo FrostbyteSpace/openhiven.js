@@ -18,7 +18,7 @@ module.exports = class Message {
 
     if (data.mentions) {
       for (let m of data.mentions) {
-        let mention = new User(client, m);
+        const mention = new User(client, m);
         this.mentions.set(mention.id, mention);
       }
     }
@@ -26,7 +26,7 @@ module.exports = class Message {
 
 
   async edit(content) {
-    let res = await this.client.axios.patch(`/rooms/${this.room.id}/messages/${this.id}`, {
+    const res = await this.client.axios.patch(`/rooms/${this.room.id}/messages/${this.id}`, {
       content: content
     });
     if (res.data.success) {
@@ -37,7 +37,7 @@ module.exports = class Message {
   }
 
   async read() {
-    let res = await this.client.axios.post(`/rooms/${this.room.id}/messages/${this.id}`);
+    const res = await this.client.axios.post(`/rooms/${this.room.id}/messages/${this.id}`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
     }
@@ -45,7 +45,7 @@ module.exports = class Message {
   }
 
   async delete() {
-    let res = await this.client.axios.delete(`/rooms/${this.room.id}/messages/${this.id}`);
+    const res = await this.client.axios.delete(`/rooms/${this.room.id}/messages/${this.id}`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
     }
@@ -60,9 +60,9 @@ module.exports = class Message {
     this.timestamp = data.timestamp;
 
     if (data.mentions) {
-      mentions = new Collection();
+      const mentions = new Collection();
       for (let m of data.mentions) {
-        let mention = this.mentions.get(m.id) || new User(this.client, m);
+        const mention = this.mentions.get(m.id) || new User(this.client, m);
         mentions.set(mention.id, mention);
       }
       this.mentions = mentions;

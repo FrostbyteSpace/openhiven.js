@@ -15,11 +15,11 @@ module.exports = class Room {
   }
 
   async send(content) {
-    let res = await this.client.axios.post(`/rooms/${this.id}/messages`, {
+    const res = await this.client.axios.post(`/rooms/${this.id}/messages`, {
       content: content
     });
     if (res.data.success) {
-      let message = new Message(this.client, res.data.data);
+      const message = new Message(this.client, res.data.data);
       this.client.messages.set(message.id, message);
       return message;
     }
@@ -27,11 +27,11 @@ module.exports = class Room {
   }
 
   async file(file, name) {
-    let form = new FormData();
+    const form = new FormData();
     form.append('file', file, name);
-    let res = await this.client.axios.post(`/rooms/${this.id}/media_messages`, form);
+    const res = await this.client.axios.post(`/rooms/${this.id}/media_messages`, form);
     if (res.data.success) {
-      let message = new Message(this.client, res.data.data);
+      const message = new Message(this.client, res.data.data);
       this.client.messages.set(message.id, message);
       return message;
     }
@@ -39,7 +39,7 @@ module.exports = class Room {
   }
 
   async type() {
-    let res = await this.client.axios.post(`/rooms/${this.id}/typing`);
+    const res = await this.client.axios.post(`/rooms/${this.id}/typing`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
     }
@@ -47,7 +47,7 @@ module.exports = class Room {
   }
 
   async settings(options) {
-    let res = await this.client.axios.put(`/users/@me/settings/room_overrides/${this.id}`, {
+    const res = await this.client.axios.put(`/users/@me/settings/room_overrides/${this.id}`, {
       notification_preference: options.notifications,
     });
     if ([ 200, 204 ].includes(res.status)) {
@@ -60,7 +60,7 @@ module.exports = class Room {
     if (data.default_permission_override !== null) this.defaultPermissions = data.default_permission_override;
     if (data.permission_overrides !== null) this.permissions = data.permission_overrides;
     this.last_message = data.last_message_id;
-    
+
     return this;
   }
 }

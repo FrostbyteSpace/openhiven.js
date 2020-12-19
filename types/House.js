@@ -19,7 +19,7 @@ module.exports = class House {
 
     if (data.roles) {
       for (let r of data.roles) {
-        let role = new Role(client, {...r, house: this});
+        const role = new Role(client, {...r, house: this});
         this.roles.set(r.id, role);
       }
     }
@@ -32,14 +32,14 @@ module.exports = class House {
     // }
     if (data.rooms) {
       for (let r of data.rooms) {
-        let room = new HouseRoom(client, {...r, house: this});
+        const room = new HouseRoom(client, {...r, house: this});
         this.rooms.set(room.id, room);
       }
     }
     if (data.entities) {
       for (let e of data.entities) {
         if (e.type === 1) {
-          let entity = new Category(client, {...e, house: this });
+          const entity = new Category(client, {...e, house: this });
           this.categories.set(entity.id, entity);
         }
       }
@@ -49,14 +49,14 @@ module.exports = class House {
 
 
   async createCategory(name) {
-    let res = await this.client.axios.post(`/houses/${this.id}/entities`, {
+    const res = await this.client.axios.post(`/houses/${this.id}/entities`, {
       name: name,
       type: 1
     });
     if (res.data.success) {
       for (let e of res.data.data.entities) {
         if (e.resource_type === 1 && !this.categories.has(e.id)) {
-          let entity = new Category(this.client, e);
+          const entity = new Category(this.client, e);
           this.categories.set(e.id, entity);
           return entity;
         }
@@ -67,12 +67,12 @@ module.exports = class House {
 
   async createRoom(name, parent=(this.categories.find(cat=>cat.name=='Rooms') || this.categories.first()).id ) {
     parent = (typeof parent == 'string' ? parent : parent.id);
-    let res = await this.client.axios.post(`/houses/${this.id}/rooms`, {
+    const res = await this.client.axios.post(`/houses/${this.id}/rooms`, {
       name: name,
       parent_entity_id: parent
     });
     if (res.data.success) {
-      let room = new HouseRoom(this.client, res.data.data);
+      const room = new HouseRoom(this.client, res.data.data);
       this.rooms.set(room.id, room);
       this.client.rooms.set(room.id, room);
     }
@@ -80,7 +80,7 @@ module.exports = class House {
   }
 
   async createInvite(max_uses, max_age) {
-    let res = await this.client.axios.post(`/houses/${this.id}/invites`, {
+    const res = await this.client.axios.post(`/houses/${this.id}/invites`, {
       max_uses: max_uses || 0,
       max_age: max_age || 0
     });
@@ -91,7 +91,7 @@ module.exports = class House {
   }
 
   async edit(name, icon) {
-    let res = await this.client.axios.patch(`/houses/${this.id}`, {
+    const res = await this.client.axios.patch(`/houses/${this.id}`, {
       name: name,
       icon: icon || null
     });
@@ -103,7 +103,7 @@ module.exports = class House {
   }
 
   async leave() {
-    let res = await this.client.axios.delete(`/users/@me/houses/${this.id}`);
+    const res = await this.client.axios.delete(`/users/@me/houses/${this.id}`);
     if ([ 200, 204 ].includes(res.status)) {
       this.client.houses.delete(this.id);
       delete this;
@@ -113,7 +113,7 @@ module.exports = class House {
   }
 
   async delete() {
-    let res = await this.client.axios.delete(`/houses/${this.id}`);
+    const res = await this.client.axios.delete(`/houses/${this.id}`);
     if ([ 200, 204 ].includes(res.status)) {
       this.client.houses.delete(this.id);
       delete this;
@@ -136,7 +136,7 @@ module.exports = class House {
       const categories = new Collection();
       for (let e of data.entities) {
         if (e.type === 1) {
-          let entity = this.categories.get(e.id) || new Category(this.client, e);
+          const entity = this.categories.get(e.id) || new Category(this.client, e);
           categories.set(entity.id, entity);
         }
       }

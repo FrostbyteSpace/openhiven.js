@@ -28,7 +28,7 @@ module.exports = class Category {
       if (!force) throw new Error('Please empty the category before deleting, or force delete it.');
       for (let r of this.rooms.array()) { await r.delete() }''
     }
-    let res = await this.client.axios.delete(`/houses/${this.house.id}/entities/${this.id}`);
+    const res = await this.client.axios.delete(`/houses/${this.house.id}/entities/${this.id}`);
     if ([ 200, 204 ].includes(res.status)) {
       this.house.categories.delete(this.id);
       delete this;

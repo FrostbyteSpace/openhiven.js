@@ -136,7 +136,7 @@ module.exports = class Client extends EventEmitter {
         }
 
         case 'MESSAGE_CREATE': {
-          let message = new Message(this, d);
+          const message = new Message(this, d);
           this.messages.set(d.id, message);
           return this.emit('message', message);
         }
@@ -164,7 +164,7 @@ module.exports = class Client extends EventEmitter {
         }
 
         case 'HOUSE_JOIN': {
-          let house = new House(this, d)
+          const house = new House(this, d)
           this.houses.set(house.id, house);
           return this.emit('houseAdd', house);
         }
@@ -233,12 +233,12 @@ module.exports = class Client extends EventEmitter {
 
   async createHouse(name, icon) {
     if (!name) throw new Error('Can\'t create a house without a name!');
-    let res = await this.axios.post(`/houses`, {
+    const res = await this.axios.post(`/houses`, {
       name: name,
       icon: icon || null
     });
     if (res.data.success) {
-      let house = new House(this, res.data.data);
+      const house = new House(this, res.data.data);
       this.houses.set(house.id, house);
       return house;
     }
@@ -270,7 +270,7 @@ module.exports = class Client extends EventEmitter {
   }
 
   async fetchInvite(code) {
-    let res = await this.axios.get(`/invites/${code}`);
+    const res = await this.axios.get(`/invites/${code}`);
     if (res.data.succes) {
       return new Invite(this, res.data.data);
     }
@@ -278,9 +278,9 @@ module.exports = class Client extends EventEmitter {
   }
 
   async fetchUser(name) {
-    let res = await this.axios.get(`/users/${name}`);
+    const res = await this.axios.get(`/users/${name}`);
     if (res.data.success) {
-      let user = new User(this, res.data.data);
+      const user = new User(this, res.data.data);
       this.users.set(user.id, user);
       return user;
     }

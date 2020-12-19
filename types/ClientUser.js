@@ -10,7 +10,7 @@ module.exports = class ClientUser extends User {
     this.relationships = new Collection();
     if (data.relationships) {
       for (let r in data.relationships) {
-        let relationship = new User(client, data.relationships[r].user);
+        const relationship = new User(client, data.relationships[r].user);
         relationship.relationshipType = data.relationships[r].type;
         this.relationships.set(r, relationship);
       }

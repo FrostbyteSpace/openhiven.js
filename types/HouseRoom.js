@@ -11,7 +11,7 @@ module.exports = class HouseRoom extends BaseRoom {
   }
 
   async edit(name) {
-    let res = await this.client.axios.patch(`/rooms/${this.id}`, {
+    const res = await this.client.axios.patch(`/rooms/${this.id}`, {
       name: name,
     });
     if (res.data.success) {
@@ -21,7 +21,7 @@ module.exports = class HouseRoom extends BaseRoom {
   }
 
   async delete() {
-    let res = await this.client.axios.delete(`/houses/${this.house.id}/rooms/${this.id}`);
+    const res = await this.client.axios.delete(`/houses/${this.house.id}/rooms/${this.id}`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
     }

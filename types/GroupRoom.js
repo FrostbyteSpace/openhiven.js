@@ -11,14 +11,14 @@ module.exports = class HouseRoom extends BaseRoom {
 
     if (this.recipients) {
       for (let r in data.recipients) {
-        let recipient = new User(client, data.recipients[r]);
+        const recipient = new User(client, data.recipients[r]);
         this.recipients.set(r, recipient);
       }
     }
   }
 
   async call() {
-    let res = await this.client.axios.post(`/rooms/${this.id}/call`);
+    const res = await this.client.axios.post(`/rooms/${this.id}/call`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
     }
@@ -26,7 +26,7 @@ module.exports = class HouseRoom extends BaseRoom {
   }
 
   async declineCall() {
-    let res = await this.client.axios.post(`/rooms/${this.id}/call/decline`);
+    const res = await this.client.axios.post(`/rooms/${this.id}/call/decline`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
     }
@@ -35,7 +35,7 @@ module.exports = class HouseRoom extends BaseRoom {
 
   async add(user) {
     if (user instanceof User) user = user.id;
-    let res = await this.client.axios.put(`/rooms/${this.id}/recipients/${user}`);
+    const res = await this.client.axios.put(`/rooms/${this.id}/recipients/${user}`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
     }
@@ -44,7 +44,7 @@ module.exports = class HouseRoom extends BaseRoom {
 
   async remove(user) {
     if (user instanceof User) user = user.id;
-    let res = await this.client.axios.delete(`/rooms/${this.id}/recipients/${user}`);
+    const res = await this.client.axios.delete(`/rooms/${this.id}/recipients/${user}`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
     }
@@ -52,7 +52,7 @@ module.exports = class HouseRoom extends BaseRoom {
   }
 
   async edit(name) {
-    let res = await this.client.axios.patch(`/rooms/${this.id}`, {
+    const res = await this.client.axios.patch(`/rooms/${this.id}`, {
       name: name,
     });
     if (res.data.success) {
@@ -62,7 +62,7 @@ module.exports = class HouseRoom extends BaseRoom {
   }
 
   async leave() {
-    let res = await this.client.axios.delete(`/users/@me/rooms/${this.id}`);
+    const res = await this.client.axios.delete(`/users/@me/rooms/${this.id}`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
     }
@@ -76,7 +76,7 @@ module.exports = class HouseRoom extends BaseRoom {
     if (data.recipients) {
       const recipients = new Collection();
       for (let r in data.recipients) {
-        let recipient = this.recipients.get(r) || new User(this.client, data.recipients[r]);
+        const recipient = this.recipients.get(r) || new User(this.client, data.recipients[r]);
         recipients.set(r, recipient);
       }
       this.recipients = recipients;

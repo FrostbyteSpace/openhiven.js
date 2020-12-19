@@ -11,9 +11,9 @@ module.exports = class Websocket extends EventEmitter {
 
   async connect() {
     return new Promise((resolve) => {
-      let ws = new WS(URL);
+      const ws = new WS(URL);
       ws.on('message', async (msg) => {
-        let body = JSON.parse(msg);
+        const body = JSON.parse(msg);
         if (body.op === 1 && body.d && body.d.hbt_int) {
           await this.beat(body.d.hbt_int);
         }

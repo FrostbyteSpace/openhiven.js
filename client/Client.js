@@ -62,99 +62,77 @@ module.exports = class Client extends EventEmitter {
 
       switch (e) {
         case 'INIT_STATE': {
-          // d: {
-          //   user: user,
-          //   settings: {
-          //     user_id: string,
-          //     theme: null,
-          //     room_overrides: {
-          //       id: { notification_preference: int }
-          //     },
-          //     onboarded: unknown,
-          //     enable_desktop_notifications: unknown
-          //   },
-          //   relationships: {
-          //     id: {
-          //       user_id: string,
-          //       user: user,
-          //       type: int,
-          //       last_updated_at: string
-          //     }
-          //   },
-          //   read_state: {
-          //     id: {
-          //       message_id: string,
-          //       mention_count: int
-          //     },
-          //   },
-          //   private_rooms: room[]
-          //   presences: {
-          //     id: user
-          //   },
-          //   house_memberships: {
-          //     id: member
-          //   },
-          //   house_ids: string[]
-          // }
-
           this.user = new ClientUser(this, d);
           for (let room of d.private_rooms) {
-            if (room.type === 1) {
-              this.privateRooms.set(room.id, new DMRoom(this, room));
+            switch (room.type) {
+              case 1:
+                this.privateRooms.set(room.id, new DMRoom(this, room));
+                break;
+              case 2:
+                this.privateRooms.set(room.id, new GroupRoom(this, room));
+                break;
+              default:
+                return;
             }
-            else if (room.type === 2) {
-              this.privateRooms.set(room.id, new GroupRoom(this, room));
-            }
-            else { return }
           }
           return this.emit('init');
         }
 
         case 'ROOM_CREATE': {
           let room;
-          if (d.house_id && this.houses.has(d.house_id)) {
-            room = new HouseRoom(this, d);
-            this.houses.get(d.house_id).rooms.set(room.id, room);
+          switch (d.type) {
+            case 0:
+              if (!this.houses.has(d.house_id)) return;
+              room = new HouseRoom(this, d);
+              this.houses.get(d.house_id).rooms.set(room.id, room);
+              break;
+            case 1:
+              room = new DMRoom(this, d);
+              this.privateRooms.set(room.id, room);
+              break;
+            case 2:
+              room = new GroupRoom(this, d);
+              this.privateRooms.set(room.id, room);
+              break;
+            default:
+              return;
           }
-          else {
-            if (d.type === 1) { room = new DMRoom(this, d) }
-            else if (d.type === 2) { room = new GroupRoom(this, d) }
-            else { return }
-            this.privateRooms.set(room.id, room);
-          }
-          return this.emit('room_create', room);
+          return this.emit('roomCreate', room);
         }
 
         case 'ROOM_UPDATE': {
-          let room;
-          if (d.house_id && this.houses.has(d.house_id)) {
-            room = this.houses.get(d.house_id).rooms.get(d.id);
-            if (!room) {
-              room = new HouseRoom(this, d);
-              this.houses.get(d.house_id).rooms.set(room.id, room);
+          let room = this.rooms.get(d.id);
+          if (!room) {
+            switch (d.type) {
+              case 0:
+                if (!this.houses.has(d.house_id)) return;
+                room = new HouseRoom(this, d);
+                this.houses.get(d.house_id).rooms.set(room.id, room);
+                break;
+              case 1:
+                room = new DMRoom(this, d);
+                this.privateRooms.set(room.id, room);
+                break;
+              case 2:
+                room = new GroupRoom(this, d);
+                this.privateRooms.set(room.id, room);
+                break;
+              default:
+                return;
             }
           }
-          else {
-            room = this.privateRooms.get(d.id);
-            if (!room) {
-              if (d.type === 1) { room = new DMRoom(this, d) }
-              else if (d.type === 2) { room = new GroupRoom(this, d) }
-              else { return }
-              this.privateRooms.set(room.id, room);
-            }
-          }
-          room.name = d.name;
-          return this.emit('room_update', room);
+          room._update(d);
+          return this.emit('roomUpdate', room);
         }
 
         case 'ROOM_DELETE': {
-          if (d.house_id && this.houses.has(d.house_id)) {
-            this.houses.get(d.house_id).rooms.delete(d.id)
+          if (this.houses.has(d.house_id)) {
+            this.houses.get(d.house_id).rooms.delete(d.id);
           }
           else {
             this.privateRooms.delete(d.id);
           }
-          return this.emit('room_delete', d);
+          return this.emit('roomDelete', d);
         }
 
         case 'MESSAGE_CREATE': {
@@ -172,73 +150,55 @@ module.exports = class Client extends EventEmitter {
             message = new Message(this, d);
             this.messages.set(message.id, message);
           }
-          message.content = d.content;
-          message.last_edit = d.edited_at;
-          return this.emit('message_update', message);
+          message._update(d);
+          return this.emit('messageUpdate', message);
         }
 
         case 'MESSAGE_DELETE': {
           this.messages.delete(d.id);
-          return this.emit('message_delete', d);
+          return this.emit('messageDelete', d);
         }
 
         case 'TYPING_START': {
-          // d: {
-          //   timestamp: 1608131133,
-          //   room_id: '182410585965590336',
-          //   house_id: '182410583881021247',
-          //   author_id: '182385886304925462'
-          // }
-
-          return this.emit('typing_start', d);
+          return this.emit('typing', d);
         }
 
         case 'HOUSE_JOIN': {
-          // d: {
-          //   rooms: room[],
-          //   roles: role[],
-          //   owner_id: string,
-          //   name: string,
-          //   members: member[],
-          //   id: string,
-          //   icon: string,
-          //   entities: entity[],
-          //   default_permissions: int,
-          //   banner: string
-          // }
-
-
           let house = new House(this, d)
           this.houses.set(house.id, house);
-          return this.emit('house_join', house);
+          return this.emit('houseAdd', house);
         }
 
-        case 'HOUSE_MEMBER_JOIN': {
-          // on hold until full member system update
-          break;
+        case 'HOUSE_UPDATE': {
+          let house;
+          if (this.houses.has(d.id)) {
+            house = this.houses.get(d.id);
+          }
+          else {
+            house = new House(this, d);
+            this.houses.set(house.id, house);
+          }
+          house._update(d);
+          return this.emit('houseUpdate', house);
         }
 
-        case 'HOUSE_MEMBER_LEAVE': {
-          // on hold until full member system update
-          break;
+        case 'HOUSE_ENTITIES_UPDATE': {
+          if (!this.houses.has(d.house_id)) return;
+          this.houses.get(d.house_id)._updateEntities(d);
+          return this.emit('houseEntityUpdate');
         }
 
-        case 'HOUSE_MEMBER_UPDATE': {
-          // on hold until full member system update
-          break;
-        }
-
-        case 'USER_UPDATE': {
-          // on hold until full member system update
-          break;
+        case 'RELATIONSHIP_UPDATE': {
+          const relationship = this.user._updateRelationship(d);
+          return this.emit('relationshipUpdate', relationship);
         }
 
         case 'CALL_CREATE': {
-          return this.emit('call_create', d);
+          return this.emit('call', d);
         }
 
         case 'HOUSE_DOWN': {
-          return this.emit('house_down', d);
+          return this.emit('houseDown', d);
         }
 
         default: {
@@ -252,8 +212,7 @@ module.exports = class Client extends EventEmitter {
 
 
   get users() {
-    // on hold until full member system update
-    return;
+    return new Collection(this.user.relationships);
   }
 
   get members() {
@@ -286,20 +245,24 @@ module.exports = class Client extends EventEmitter {
     return false;
   }
 
-  async createDM(recipients) {
-    let data;
-    if (typeof recipients === 'string') {
-      data = { recipient: recipients }
-    } else if (typeof recipients === 'array') {
-      data = { recipients: recipients }
-    } else {
-      throw new TypeError('Recipients must be a string or an array');
-    }
-    let res = await this.axios.post(`/users/@me/rooms`, data);
+  async createDM(recipient) {
+    const res = await this.axios.post(`/users/@me/rooms`, {
+      recipient: recipient,
+    });
     if (res.data.success) {
-      if (d.type === 1) { room = new DMRoom(this, res.data.data) }
-      else if (d.type === 2) { room = new GroupRoom(this, res.data.data) }
-      else { return }
+      const room = new DMRoom(this, res.data.data);
+      this.privateRooms.set(room.id, room);
+      return room;
+    }
+    return false;
+  }
+
+  async createGroup(recipients) {
+    const res = await this.axios.post(`/users/@me/rooms`, {
+      recipients: recipients,
+    });
+    if (res.data.success) {
+      const room = new GroupRoom(this, res.data.data);
       this.privateRooms.set(room.id, room);
       return room;
     }

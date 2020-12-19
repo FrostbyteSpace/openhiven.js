@@ -51,4 +51,25 @@ module.exports = class Message {
     }
     return false;
   }
+
+  _update(data) {
+    this.content = data.content;
+    this.room = this.client.rooms.get(data.room_id);
+    this.author = new User(this.client, data.author);
+    if (data.attachment) this.attachment = new Attachment(this.client, data.attachment);
+    if (data.house_id) this.house = client.houses.get(data.house_id);
+    if (data.member && this.house) this.member = new Member(this.client, data.member);
+    this.timestamp = data.timestamp;
+
+    if (data.mentions) {
+      mentions = new Collection();
+      for (let m of data.mentions) {
+        let mention = this.mentions.get(m.id) || new User(this.client, m);
+        mentions.set(mention.id, mention);
+      }
+      this.mentions = mentions;
+    }
+
+    return this;
+  }
 }

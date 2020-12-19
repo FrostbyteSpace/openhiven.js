@@ -121,4 +121,27 @@ module.exports = class House {
     }
     return false;
   }
+
+  _update(data) {
+    this.id = data.id;
+    this.name = data.name;
+    this.icon = data.icon;
+    this.banner = data.banner;
+
+    return this;
+  }
+
+  _updateEntities(data) {
+    if (data.entities) {
+      const categories = new Collection();
+      for (let e of data.entities) {
+        if (e.type === 1) {
+          let entity = this.categories.get(e.id) || new Category(this.client, e);
+          categories.set(entity.id, entity);
+        }
+      }
+      this.categories = categories;
+    }
+    return this;
+  }
 }

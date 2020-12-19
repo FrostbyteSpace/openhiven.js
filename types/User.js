@@ -12,7 +12,7 @@ module.exports = class User {
     this.website = data.website;
     this.location = data.location;
     this.emailVerified = data.email_verified;
-    this.relationship_type = 0;
+    this.relationshipType = 0;
   }
 
 
@@ -28,16 +28,8 @@ module.exports = class User {
     return false;
   }
 
-  async unfriend() {
-    if (!this.client.user.friends.has(this.id)) return;
-    const res = await this.client.axios.delete(`/relationships/@me/friends/${this.id}`);
-    if ([ 200, 204 ].includes(res.status)) {
-      return true;
-    }
-    return false;
-  }
-
   async friend() {
+    if (this.client.user.friends.has(this.id)) return;
     const res = await this.client.axios.post(`/relationships/@me/friend-requests`, {
       user_id: this.id,
     });
@@ -47,7 +39,26 @@ module.exports = class User {
     return false;
   }
 
+  async cancel() {
+    if (!this.client.user.friendRequests.has(this.id)) return;
+    const res = await this.client.axios.delete(`/relationships/@me/friend-requests/${this.id}`);
+    if ([ 200, 204 ].includes(res.status)) {
+      return true;
+    }
+    return false;
+  }
+
+  async unfriend() {
+    if (!this.client.user.friends.has(this.id)) return;
+    const res = await this.client.axios.delete(`/relationships/@me/friends/${this.id}`);
+    if ([ 200, 204 ].includes(res.status)) {
+      return true;
+    }
+    return false;
+  }
+
   async block() {
+    if (this.client.user.blocked.has(this.id)) return;
     const res = await this.client.axios.put(`/relationships/@me/blocked/${this.id}`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
@@ -56,6 +67,7 @@ module.exports = class User {
   }
 
   async unblock() {
+    if (!this.client.user.blocked.has(this.id)) return;
     const res = await this.client.axios.delete(`/relationships/@me/blocked/${this.id}`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
@@ -64,6 +76,7 @@ module.exports = class User {
   }
 
   async restrict() {
+    if (this.client.user.restricted.has(this.id)) return;
     const res = await this.client.axios.put(`/relationships/@me/restricted/${this.id}`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
@@ -72,16 +85,8 @@ module.exports = class User {
   }
 
   async unrestrict() {
+    if (!this.client.user.restricted.has(this.id)) return;
     const res = await this.client.axios.delete(`/relationships/@me/restricted/${this.id}`);
-    if ([ 200, 204 ].includes(res.status)) {
-      return true;
-    }
-    return false;
-  }
-
-  async cancel() {
-    if (!this.client.user.friends.has(this.id)) return;
-    const res = await this.client.axios.delete(`/relationships/@me/friend-requests/${this.id}`);
     if ([ 200, 204 ].includes(res.status)) {
       return true;
     }
@@ -100,5 +105,7 @@ module.exports = class User {
     this.website = data.website;
     this.location = data.location;
     this.emailVerified = data.email_verified;
+
+    return this;
   }
 }

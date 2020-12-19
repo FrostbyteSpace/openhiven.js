@@ -55,4 +55,12 @@ module.exports = class Room {
     }
     return false;
   }
+
+  _update(data) {
+    if (data.default_permission_override !== null) this.defaultPermissions = data.default_permission_override;
+    if (data.permission_overrides !== null) this.permissions = data.permission_overrides;
+    this.last_message = data.last_message_id;
+    
+    return this;
+  }
 }

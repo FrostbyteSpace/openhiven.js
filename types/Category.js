@@ -3,6 +3,7 @@ const Collection = require('../djs-collection');
 module.exports = class Category {
   constructor(client, data) {
     this.id = data.id;
+    this.name = data.name;
     this.position = data.position;
     this.rooms = new Collection();
     this.house = data.house || client.houses.get(data.house_id);
@@ -34,5 +35,22 @@ module.exports = class Category {
       return true;
     }
     return false;
+  }
+
+  _update(data) {
+    this.position = data.position;
+    this.name = data.name;
+
+    if (data.resource_pointers) {
+      this.rooms = new Collection();
+      for (let p of data.resource_pointers) {
+        if (p.resource_type === 'room') {
+          this.rooms.set(p.resource_id, this.house.rooms.get(p.resource_id));
+          this.house.rooms.get(p.resource_id).category = this;
+        }
+      }
+    }
+
+    return this;
   }
 }

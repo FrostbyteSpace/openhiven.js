@@ -17,14 +17,4 @@ module.exports = class Member {
       }
     }
   }
-
-  // _update (data) {
-  //   for (let r of this.roles.array()) {
-  //     if (!data.roles.has(r.id)) this.roles.delete(r.id);
-  //   }
-  //   for (let r of data.roles) {
-  //     if (!this.roles.has(r.id)) this.roles.set(r.id, this.house.roles.get(r.id));
-  //   }
-  //   this.presence = data.presence;
-  // }
 }

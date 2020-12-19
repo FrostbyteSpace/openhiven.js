@@ -71,13 +71,13 @@ a list of all websocket events
 - [x] [ROOM_CREATE](#room_create)
 - [x] [ROOM_UPDATE](#room_update)
 - [x] [ROOM_DELETE](#room_delete)
-- [ ] [HOUSE_ENTITIES_UPDATE](#house_entities_update)
+- [x] [HOUSE_ENTITIES_UPDATE](#house_entities_update)
 - [ ] [HOUSE_MEMBER_UPDATE](#house_member_update)
 - [ ] [USER_UPDATE](#user_update)
-- [ ] [RELATIONSHIP_UPDATE](#relationship_update)
+- [x] [RELATIONSHIP_UPDATE](#relationship_update)
 - [ ] [PRESENCE_UPDATE](#presence_update)
-- [ ] [HOUSE_DOWN](#house_down)
-- [ ] [HOUSE_UPDATE](#house_update)
+- [x] [HOUSE_DOWN](#house_down)
+- [x] [HOUSE_UPDATE](#house_update)
 
 
 ### after connecting

@@ -27,4 +27,13 @@ module.exports = class HouseRoom extends BaseRoom {
     }
     return false;
   }
+
+  _update(data) {
+    this.name = data.name;
+    this.emoji = data.emoji;
+    this.description = data.description;
+    this.position = data.position;
+
+    return this;
+  }
 }

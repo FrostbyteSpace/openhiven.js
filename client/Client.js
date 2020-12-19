@@ -15,7 +15,7 @@ const User = require('../types/User.js');
 const Invite = require('../types/Invite.js');
 
 const APIURL = 'https://api.hiven.io/v1/';
-const USERAGENT = 'easyHiven.js | https://github.com/FrostbyteSpace';
+const USERAGENT = 'easyhiven.js v0.2 | https://github.com/FrostbyteSpace';
 
 module.exports = class Client extends EventEmitter {
   constructor(options={}) {

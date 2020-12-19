@@ -237,6 +237,10 @@ module.exports = class Client extends EventEmitter {
           return this.emit('call_create', d);
         }
 
+        case 'HOUSE_DOWN': {
+          return this.emit('house_down', d);
+        }
+
         default: {
           break;
         }

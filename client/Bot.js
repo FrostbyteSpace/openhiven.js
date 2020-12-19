@@ -8,8 +8,8 @@ const Path = require('path');
 
 module.exports = class Bot extends Client {
   constructor(options) {
-
-    super(options)
+    options.type = options.type || 'bot';
+    super(options);
 
     this.prefix = options.prefix;
     this.owner = options.owner;

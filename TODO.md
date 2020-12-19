@@ -77,6 +77,7 @@ a list of all websocket events
 - [ ] [RELATIONSHIP_UPDATE](#relationship_update)
 - [ ] [PRESENCE_UPDATE](#presence_update)
 - [ ] [HOUSE_DOWN](#house_down)
+- [ ] [HOUSE_UPDATE](#house_update)
 
 
 ### after connecting
@@ -559,6 +560,40 @@ d: {
   presence: string,
   joined_at: string,
   house_id: string
+}
+```
+
+### HOUSE_UPDATE
+```
+op: 0
+d: {
+  type: int,
+  roles: [{
+    position: int,
+    name: string,
+    level: int,
+    id: string,
+    deny: int,
+    color: string,
+    allow: int
+  }],
+  owner_id: string,
+  name: string,
+  id: string,
+  icon: string,
+  house_id: string,
+  entities: [{
+    type: int,
+    resource_pointers: [{
+      resource_type: string,
+      resource_id: string
+    }],
+    position: int,
+    name: string,
+    id: string
+  }],
+  default_permissions: int,
+  banner: unknown
 }
 ```
 

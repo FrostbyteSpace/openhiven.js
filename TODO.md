@@ -7,7 +7,7 @@
 - [Permissions](#permissions)
 - [Future Updates](#future-updates)
 - [Data Structures](#data-strucutes)
-- [Type Integer Meanings](#type-integer-meanings)
+- [Type Integers](#type-integers)
 - [Secret Chat Stuff](#secret-chat-stuff)
 
 ## Endpoints
@@ -822,10 +822,37 @@ Thanks to [@rishon](https://app.hiven.io/@rishon) for this list!
 }
 ```
 
-## Type Integer Meanings
-- relationships.type: { 1: 'outgoing request', 2: 'incoming request', 3: 'friends', 4: 'restricted', 5: 'blocked' }
-- notification_preference: { 0: 'all', 1: 'mentions', 2: 'none' }
-- room types { 0: 'House', 1: 'DM', 2: 'Group'}
+## Type Integers
+#### relationship types
+```
+{
+  0: 'none',
+  1: 'outgoing request',
+  2: 'incoming request',
+  3: 'friends',
+  4: 'restricted',
+  5: 'blocked'
+}
+```
+
+#### notification preferences
+```
+{
+  0: 'all',
+  1: 'mentions',
+  2: 'none'
+}
+```
+
+#### room types
+```
+{
+  0: 'House',
+  1: 'DM',
+  2: 'Group'
+}
+```
+
 
 ## Secret Chat Stuff
 ```

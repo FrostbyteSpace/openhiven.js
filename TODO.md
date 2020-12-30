@@ -823,7 +823,7 @@ Thanks to [@rishon](https://app.hiven.io/@rishon) for this list!
 ```
 
 ## Type Integers
-#### relationship types
+### relationship types
 ```
 {
   0: 'none',
@@ -835,7 +835,7 @@ Thanks to [@rishon](https://app.hiven.io/@rishon) for this list!
 }
 ```
 
-#### notification preferences
+### notification preferences
 ```
 {
   0: 'all',
@@ -844,7 +844,7 @@ Thanks to [@rishon](https://app.hiven.io/@rishon) for this list!
 }
 ```
 
-#### room types
+### room types
 ```
 {
   0: 'House',

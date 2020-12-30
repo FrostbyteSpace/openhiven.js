@@ -42,11 +42,12 @@ module.exports = class Client extends EventEmitter {
   async connect(token) {
     this.token = token || this.token;
     this.token = (this.type === 'bot' ? `Bot ${this.token}`: this.token);
+    this.emit('debug', this.token);
 
     this.axios.defaults.headers.common['Authorization'] = this.token;
     this.axios.interceptors.request.use(config => {
       if (config.data instanceof FormData) {
-        Object.assign(config.headers, config.data.getHeaders());
+        config.headers = {...config.headers, ...config.data.getHeaders()};
       }
       return config;
     });
@@ -58,7 +59,7 @@ module.exports = class Client extends EventEmitter {
 
     this.ws.on('data', async (body) => {
       const { e, d } = body;
-      this.emit('RAW', body);
+      this.emit('debug', body);
 
       switch (e) {
         case 'INIT_STATE': {
@@ -289,7 +290,7 @@ module.exports = class Client extends EventEmitter {
 
 
 
-  _log(msg, level) {
+  _log(msg, level=1) {
     if (level <= this.logging) return console.log(msg);
   }
 }

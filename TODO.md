@@ -90,51 +90,10 @@ d: {
 
 ### INIT_STATE
 ```
-op: 0
-d: {
-  user: {
-    username: string,
-    user_flags: string,
-    name: string,
-    id: string,
-    icon: string,
-    header: string,
-    presence: string
-  },
-  settings: {
-    user_id: string,
-    theme: null,
-    room_overrides: {
-      id: { notification_preference: int }
-    },
-    onboarded: unknown,
-    enable_desktop_notifications: unknown
-  },
-  relationships: {
-    id: {
-      user_id: string,
-      user: {
-        username: string,
-        user_flags: string,
-        name: string,
-        id: string,
-        icon: string,
-        header: string,
-        presence: string
-      },
-      type: int,
-      last_updated_at: string
-    }
-  },
-  read_state: {
-    id: {
-      message_id: string,
-      mention_count: int
-    },
-  },
-  private_rooms: room[]
-  presences: {
-    id: {
+{
+  op: 0
+  d: {
+    user: {
       username: string,
       user_flags: string,
       name: string,
@@ -142,12 +101,41 @@ d: {
       icon: string,
       header: string,
       presence: string
-    }
-  },
-  house_memberships: {
-    id: {
+    },
+    settings: {
       user_id: string,
-      user: {
+      theme: null,
+      room_overrides: {
+        id: { notification_preference: int }
+      },
+      onboarded: unknown,
+      enable_desktop_notifications: unknown
+    },
+    relationships: {
+      id: {
+        user_id: string,
+        user: {
+          username: string,
+          user_flags: string,
+          name: string,
+          id: string,
+          icon: string,
+          header: string,
+          presence: string
+        },
+        type: int,
+        last_updated_at: string
+      }
+    },
+    read_state: {
+      id: {
+        message_id: string,
+        mention_count: int
+      },
+    },
+    private_rooms: room[]
+    presences: {
+      id: {
         username: string,
         user_flags: string,
         name: string,
@@ -155,85 +143,62 @@ d: {
         icon: string,
         header: string,
         presence: string
-      },
-      roles: array,
-      last_permission_update: string,
-      joined_at: string,
-      house_id: string
-    }
-  },
-  house_ids: string[]
+      }
+    },
+    house_memberships: {
+      id: {
+        user_id: string,
+        user: {
+          username: string,
+          user_flags: string,
+          name: string,
+          id: string,
+          icon: string,
+          header: string,
+          presence: string
+        },
+        roles: array,
+        last_permission_update: string,
+        joined_at: string,
+        house_id: string
+      }
+    },
+    house_ids: string[]
+  }
 }
 ```
 
 ### HOUSE_JOIN
 ```
-op: 0
-d: {
-  rooms: room[{
-    type: int,
-    recipients: null
-    position: int,
-    permission_overrides: bits,
+{
+  op: 0
+  d: {
+    rooms: room[{
+      type: int,
+      recipients: null
+      position: int,
+      permission_overrides: bits,
+      owner_id: string,
+      name: string,
+      last_message_id: string,
+      id: string,
+      house_id: string,
+      emoji: object,
+      description: string,
+      default_permission_override: int
+    }],
+    roles: role[{
+      position: int,
+      name: string,
+      level: int,
+      id: string,
+      deny: bits,
+      color: string,
+      allow: bits
+    }],
     owner_id: string,
     name: string,
-    last_message_id: string,
-    id: string,
-    house_id: string,
-    emoji: object,
-    description: string,
-    default_permission_override: int
-  }],
-  roles: role[{
-    position: int,
-    name: string,
-    level: int,
-    id: string,
-    deny: bits,
-    color: string,
-    allow: bits
-  }],
-  owner_id: string,
-  name: string,
-  members: [{
-    user_id: string,
-    user: {
-      username: string,
-      user_flags: string,
-      name: string,
-      id: string,
-      icon: string,
-      header: string,
-      presence: string
-    },
-    roles: array,
-    last_permission_update: string,
-    joined_at: string,
-    house_id: string
-  }],
-  id: string,
-  icon: string,
-  entities: [{
-    type: int,
-    resource_pointers: [{
-      resource_type: string,
-      resource_id: string
-    }],
-    position: int,
-    name: string,
-    id: string
-  }],
-  default_permissions: int,
-  banner: string
-}
-```
-
-### HOUSE_MEMBERS_CHUNK
-```
-op: 0
-d: {
-  members: {
-    id: {
+    members: [{
       user_id: string,
       user: {
         username: string,
@@ -248,42 +213,108 @@ d: {
       last_permission_update: string,
       joined_at: string,
       house_id: string
-    }
-  },
-  house_id: string
+    }],
+    id: string,
+    icon: string,
+    entities: [{
+      type: int,
+      resource_pointers: [{
+        resource_type: string,
+        resource_id: string
+      }],
+      position: int,
+      name: string,
+      id: string
+    }],
+    default_permissions: int,
+    banner: string
+  }
+}
+```
+
+### HOUSE_MEMBERS_CHUNK
+```
+{
+  op: 0
+  d: {
+    members: {
+      id: {
+        user_id: string,
+        user: {
+          username: string,
+          user_flags: string,
+          name: string,
+          id: string,
+          icon: string,
+          header: string,
+          presence: string
+        },
+        roles: array,
+        last_permission_update: string,
+        joined_at: string,
+        house_id: string
+      }
+    },
+    house_id: string
+  }
 }
 ```
 
 ### TYPING_START
 ```
-op: 0
-d: {
-  timestamp: int,
-  room_id: string,
-  house_id: string,
-  author_id: string
+{
+  op: 0
+  d: {
+    timestamp: int,
+    room_id: string,
+    house_id: string,
+    author_id: string
+  }
 }
 ```
 
 ### MESSAGE_CREATE
 ```
-op: 0
-d: {
-  timestamp: int,
-  room_id: string,
-  mentions: [{
-    username: string,
-    user_flags: string,
-    name: string,
+{
+  op: 0
+  d: {
+    timestamp: int,
+    room_id: string,
+    mentions: [{
+      username: string,
+      user_flags: string,
+      name: string,
+      id: string,
+      icon: string,
+      header: string,
+      presence: string,
+      bot: boolean
+    }],
+    member: {
+      user_id: string,
+      user: {
+        username: string,
+        user_flags: string,
+        name: string,
+        id: string,
+        icon: string,
+        header: string,
+        presence: string
+      },
+      roles: array,
+      last_permission_update: string,
+      joined_at: string,
+      house_id: string
+    },
     id: string,
-    icon: string,
-    header: string,
-    presence: string,
-    bot: boolean
-  }],
-  member: {
-    user_id: string,
-    user: {
+    house_id: string,
+    exploding_age: int,
+    exploding: boolean,
+    device_id: string,
+    content: string,
+    bucket: int,
+    author_id: string,
+    author: {
       username: string,
       user_flags: string,
       name: string,
@@ -291,36 +322,15 @@ d: {
       icon: string,
       header: string,
       presence: string
-    },
-    roles: array,
-    last_permission_update: string,
-    joined_at: string,
-    house_id: string
-  },
-  id: string,
-  house_id: string,
-  exploding_age: int,
-  exploding: boolean,
-  device_id: string,
-  content: string,
-  bucket: int,
-  author_id: string,
-  author: {
-    username: string,
-    user_flags: string,
-    name: string,
-    id: string,
-    icon: string,
-    header: string,
-    presence: string
-  }
-  attachment: {
-    media_url: string,
-    filename: string,
-    dimensions: {
-      width: int,
-      type: string,
-      height: int
+    }
+    attachment: {
+      media_url: string,
+      filename: string,
+      dimensions: {
+        width: int,
+        type: string,
+        height: int
+      }
     }
   }
 }
@@ -328,38 +338,40 @@ d: {
 
 ### MESSAGE_UPDATE
 ```
-op: 0
-d: {
-  type: int,
-  timestamp: string,
-  room_id: string,
-  metadata: unknown,
-  mentions: [{
-    username: string,
-    user_flags: string,
-    name: string,
+{
+  op: 0
+  d: {
+    type: int,
+    timestamp: string,
+    room_id: string,
+    metadata: unknown,
+    mentions: [{
+      username: string,
+      user_flags: string,
+      name: string,
+      id: string,
+      icon: string,
+      header: string,
+      presence: string
+    }],
     id: string,
-    icon: string,
-    header: string,
-    presence: string
-  }],
-  id: string,
-  house_id: string,
-  exploding_age: int,
-  exploding: boolean,
-  embed: object,
-  edited_at: string,
-  device_id: string,
-  content: string,
-  bucket: int,
-  author_id: string,
-  attachment: {
-    media_url: string,
-    filename: string,
-    dimensions: {
-      width: int,
-      type: string,
-      height: int
+    house_id: string,
+    exploding_age: int,
+    exploding: boolean,
+    embed: object,
+    edited_at: string,
+    device_id: string,
+    content: string,
+    bucket: int,
+    author_id: string,
+    attachment: {
+      media_url: string,
+      filename: string,
+      dimensions: {
+        width: int,
+        type: string,
+        height: int
+      }
     }
   }
 }
@@ -367,73 +379,111 @@ d: {
 
 ### MESSAGE_DELETE
 ```
-op: 0
-d: {
-  room_id: string,
-  message_id: string,
-  house_id: string
+{
+  op: 0
+  d: {
+    room_id: string,
+    message_id: string,
+    house_id: string
+  }
 }
 ```
 
 ### ROOM_CREATE
 ```
-op: 0
-d: {
-  type: int,
-  position: int,
-  name: string,
-  id: string,
-  house_id: string
+{
+  op: 0
+  d: {
+    type: int,
+    position: int,
+    name: string,
+    id: string,
+    house_id: string
+  }
 }
 ```
 
 ### ROOM_UPDATE
 ```
-op: 0
-d: {
-  type: int,
-  position: int,
-  name: string,
-  id: string,
-  house_id: string,
-  emoji: object,
-  description: string
+{
+  op: 0
+  d: {
+    type: int,
+    position: int,
+    name: string,
+    id: string,
+    house_id: string,
+    emoji: object,
+    description: string
+  }
 }
 ```
 
 ### ROOM_DELETE
 ```
-op: 0
-d: {
-  id: '191527742867501935',
-  house_id: '182410583881021247'
+{
+  op: 0
+  d: {
+    id: '191527742867501935',
+    house_id: '182410583881021247'
+  }
 }
 ```
 
 ### HOUSE_ENTITIES_UPDATE
 ```
-op: 0
-d: {
-  house_id: '182410583881021247',
-  entities: [{
-    type: int,
-    resource_pointers: [{
-      resource_type: string,
-      resource_id: string
-    }],
-    position: int,
-    name: string,
-    id: string
-  }]
+{
+  op: 0
+  d: {
+    house_id: '182410583881021247',
+    entities: [{
+      type: int,
+      resource_pointers: [{
+        resource_type: string,
+        resource_id: string
+      }],
+      position: int,
+      name: string,
+      id: string
+    }]
+  }
 }
 ```
 
 ### HOUSE_MEMBER_UPDATE
 ```
-op: 0
-d: {
-  user_id: string,
-  user: {
+{
+  op: 0
+  d: {
+    user_id: string,
+    user: {
+      website: string,
+      username: string,
+      user_flags: int,
+      name: string,
+      location: string,
+      id: string,
+      icon: string,
+      header: string,
+      email_verified: boolean,
+      bot: boolean,
+      bio: string
+    },
+    roles: object[],
+    presence: string,
+    last_permission_update: unknown,
+    joined_at: string,
+    id: string,
+    house_id: string
+  }
+}
+```
+
+### USER_UPDATE
+```
+{
+  op: 0
+  d: {
     website: string,
     username: string,
     user_flags: int,
@@ -445,171 +495,210 @@ d: {
     email_verified: boolean,
     bot: boolean,
     bio: string
-  },
-  roles: object[],
-  presence: string,
-  last_permission_update: unknown,
-  joined_at: string,
-  id: string,
-  house_id: string
-}
-```
-
-### USER_UPDATE
-```
-op: 0
-d: {
-  website: string,
-  username: string,
-  user_flags: int,
-  name: string,
-  location: string,
-  id: string,
-  icon: string,
-  header: string,
-  email_verified: boolean,
-  bot: boolean,
-  bio: string
+  }
 }
 ```
 
 ### RELATIONSHIP_UPDATE
 ```
-op: 0
-d: {
-  user: {
-    website: string,
-    username: string,
-    user_flags: int,
-    name: string,
-    location: string,
-    id: string,
-    icon: string,
-    bio: string
-  },
-  type: int,
-  recipient_id: string,
-  id: string
+{
+  op: 0
+  d: {
+    user: {
+      website: string,
+      username: string,
+      user_flags: int,
+      name: string,
+      location: string,
+      id: string,
+      icon: string,
+      bio: string
+    },
+    type: int,
+    recipient_id: string,
+    id: string
+  }
 }
 ```
 
 ### PRESENCE_UPDATE
 ```
-op: 0
-d: {
-  username: string,
-  user_flags: string,
-  name: string,
-  id: string,
-  icon: string,
-  header: string,
-  presence: string
+{
+  op: 0
+  d: {
+    username: string,
+    user_flags: string,
+    name: string,
+    id: string,
+    icon: string,
+    header: string,
+    presence: string
+  }
 }
 ```
 
 ### HOUSE_DOWN
 ```
-op: 0
-d: {
-  unavailable: boolean,
-  house_id: string
+{
+  op: 0
+  d: {
+    unavailable: boolean,
+    house_id: string
+  }
 }
 ```
 
 ### HOUSE_LEAVE
 ```
-op: 0
-d: {
-  id: string,
-  house_id: string
+{
+  op: 0
+  d: {
+    id: string,
+    house_id: string
+  }
 }
 ```
 
 ### HOUSE_MEMBER_JOIN
 ```
-op: 0
-d: {
-  user: {
-    username: string,
-    user_flags: string,
-    name: string,
-    id: string,
-    icon: string,
-    header: string
-  },
-  roles: [],
-  joined_at: string,
-  house_id: string
+{
+  op: 0
+  d: {
+    user: {
+      username: string,
+      user_flags: string,
+      name: string,
+      id: string,
+      icon: string,
+      header: string
+    },
+    roles: [],
+    joined_at: string,
+    house_id: string
+  }
 }
-
 ```
 
 ### HOUSE_MEMBER_LEAVE
 ```
-op: 0
-d: {
-  user: {
-    username: string,
-    user_flags: string,
-    name: string,
-    id: string,
-    icon: string,
-    header: string
-  },
-  roles: [],
-  presence: string,
-  joined_at: string,
-  house_id: string
+{
+  op: 0
+  d: {
+    user: {
+      username: string,
+      user_flags: string,
+      name: string,
+      id: string,
+      icon: string,
+      header: string
+    },
+    roles: [],
+    presence: string,
+    joined_at: string,
+    house_id: string
+  }
 }
 ```
 
 ### HOUSE_UPDATE
 ```
-op: 0
-d: {
-  type: int,
-  roles: [{
-    position: int,
-    name: string,
-    level: int,
-    id: string,
-    deny: int,
-    color: string,
-    allow: int
-  }],
-  owner_id: string,
-  name: string,
-  id: string,
-  icon: string,
-  house_id: string,
-  entities: [{
+{
+  op: 0
+  d: {
     type: int,
-    resource_pointers: [{
-      resource_type: string,
-      resource_id: string
+    roles: [{
+      position: int,
+      name: string,
+      level: int,
+      id: string,
+      deny: int,
+      color: string,
+      allow: int
     }],
-    position: int,
+    owner_id: string,
     name: string,
-    id: string
-  }],
-  default_permissions: int,
-  banner: unknown
+    id: string,
+    icon: string,
+    house_id: string,
+    entities: [{
+      type: int,
+      resource_pointers: [{
+        resource_type: string,
+        resource_id: string
+      }],
+      position: int,
+      name: string,
+      id: string
+    }],
+    default_permissions: int,
+    banner: unknown
+  }
 }
 ```
 
 
-## Websocket Data (WIP)
+## Websocket Data
 list of websocket data you can send
 
-### Selecting a room
-returns... nothing? lol
+### Ping
 ```
-{"op":4,"d":{"id":"191544281301778432"}}
+{
+  op: 3
+}
 ```
+This is to be sent on an interval of hbt_int, as received upon connection.
+
+### Init
+```
+{
+  op: 2,
+  d: {
+    token: string
+  }
+}
+```
+Authenticates you to Hiven Swarm.
+Causes the server to send `INIT_STATE`, and `HOUSE_JOIN` for every house the authenticated account is in.
+
+### Request presence updates
+```
+{
+  op: 6
+  d: {
+    user_ids: string[]
+  }
+}
+```
+Subscribes you to presence updates for a user.
+Causes the server to send `PRESENCE_UPDATE` immediately after subscribing, and whenever the presence of a user you've subscribed to changes.
+
+### Request house members
+```
+{
+  op: 7,
+  d: {
+    house_id: string;
+    user_ids: string[];
+  }
+}
+```
+Causes the server to send `HOUSE_MEMBER_CHUNK` with the member data of the requested users.
+
+### Select a room
+```
+{
+  op:4,
+  d:{
+    id: string
+  }
+}
+```
+Haven't been able to get this working properly, but it seems to be so Hiven remembers what room you were last viewing, so you can be put back into that room next time you visit Hiven.
 
 
 ## Permissions
-all the permission bits in a row, I will probably make a class for this at some point;
+All the permission bits in a row, I will probably make a class for this at some point.
+Thanks to [@rishon](https://app.hiven.io/@rishon) for this list!
 - SEND_MESSAGES = 1 << 0,
 - READ_MESSAGES = 1 << 1,
 - ADMINISTRATOR = 1 << 2,

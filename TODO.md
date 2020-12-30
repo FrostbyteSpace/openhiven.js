@@ -1,4 +1,15 @@
 # TODO
+
+## NAV
+- [Endpoints](#endpoints)
+- [Websocket Events](#websocket-events)
+- [Websocket Data](#websocket-data)
+- [Permissions](#permissions)
+- [Future Updates](#future-updates)
+- [Data Structures](#data-strucutes)
+- [Type Integer Meanings](#type-integer-meanings)
+- [Secret Chat Stuff](#secret-chat-stuff)
+
 ## Endpoints
 when they're checked that just means they're implemented in easyhiven.js, people who just wanna use the list can disregard them >wO
 

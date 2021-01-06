@@ -1,857 +1,102 @@
-# TODO
+# TODO <!-- omit in toc -->
 
 ## NAV
+- [NAV](#nav)
 - [Endpoints](#endpoints)
+- [Future Updates](#future-updates)
 - [Websocket Events](#websocket-events)
 - [Websocket Data](#websocket-data)
-- [Permissions](#permissions)
-- [Future Updates](#future-updates)
-- [Data Structures](#data-strucutes)
-- [Type Integers](#type-integers)
 - [Secret Chat Stuff](#secret-chat-stuff)
 
 ## Endpoints
-when they're checked that just means they're implemented in easyhiven.js, people who just wanna use the list can disregard them >wO
-
 ### houses
-- [x] POST /houses | creates a house | d: { name: string, icon: base64? }
-- [x] DELETE /houses/:id | deletes a house
-- [x] PATCH /houses/:id | edit a house | d: { name: string, icon: base64 }
-- [x] POST /houses/:id/entities | adds an entity (only category so far) | d: { name: string, type: int{1: 'category''}}
-- [x] DELETE /houses/:id/entities/:id | deletes a category, has to be empty
+- [x] POST /houses
+- [x] DELETE /houses/:id
+- [x] PATCH /houses/:id
+- [x] POST /houses/:id/entities
+- [x] DELETE /houses/:id/entities/:id
 
-- [x] POST /houses/:id/invites | creates an invite | d: { max_uses: int, max_age: int }
-- [x] GET /invites/:code | fetches an invite
-- [x] POST /invites/:code | uses an invite | d: { }
+- [x] POST /houses/:id/invites
+- [x] GET /invites/:code
+- [x] POST /invites/:code
 
 ### rooms
-- [x] POST /houses/:id/rooms | creates a room | d: { name: string, parent_entity_id?(category/house): string }
-- [x] DELETE /houses/:id/rooms/:id | deletes a room
-- [x] POST /rooms/:id/typing | starts typing in a room | d: { }
-- [x] POST /rooms/:id/call | start a call | d: { }
-- [x] POST /rooms/:id/call/decline | decline a call | d: { }
-- [x] PUT /rooms/:id/recipients/:id | adds a user to a group DM
-- [x] DELETE /rooms/:id/recipients/:id | removes a user from a group DM
-- [ ] PATCH /rooms/:id/default-permissions | changes default permissions for a room | d: { allow: bitfield, deny: bitfield }
-- [x] PATCH /rooms/:id | edits a room | d: { name: string }
+- [x] POST /houses/:id/rooms
+- [x] DELETE /houses/:id/rooms/:id
+- [x] POST /rooms/:id/typing
+- [x] POST /rooms/:id/call
+- [x] POST /rooms/:id/call/decline
+- [x] PUT /rooms/:id/recipients/:id
+- [x] DELETE /rooms/:id/recipients/:id
+- [ ] PATCH /rooms/:id/default-permissions
+- [x] PATCH /rooms/:id
 
 ### messages
-- [x] POST /rooms/:id/media_messages | creates an attachment message | d: form { file: named file }
-- [x] POST /rooms/:id/messages | creates a text message | d: { content: string}
-- [x] DELETE /rooms/:id/messages/:id | deletes a message
-- [x] PATCH /rooms/:id/messages/:id | edits a message | d: { content: string }
-- [ ] GET /rooms/:id/messages | gets messages from a room | d: ?before=id
-- [x] DELETE /houses/:id/rooms/:id/messages/:id | deletes a house message, (obsolete imo, you can use /rooms/:id/messages/:id)
-- [x] POST /rooms/:id/messages/:id/ack | mark as read, probably | d: { }
+- [x] POST /rooms/:id/media_messages
+- [x] POST /rooms/:id/messages
+- [x] DELETE /rooms/:id/messages/:id
+- [x] PATCH /rooms/:id/messages/:id
+- [ ] GET /rooms/:id/messages
+- [x] DELETE /houses/:id/rooms/:id/messages/:id
+- [x] POST /rooms/:id/messages/:id/ack
 
 ### users
-- [x] GET /users/:username | gets an account
-- [x] GET /relationships/:id/mutual-friends | gets your mutual friends with an account
+- [x] GET /users/:username
+- [x] GET /relationships/:id/mutual-friends
 
 ### \@me
-- [x] PATCH /users/@me | edits your account | d: { bio: string, name: string, icon: base64?, header: base64?, location: string, website: string }
-- [x] GET /users/@me | gets your account
-- [x] GET /streams/@me/mentions | gets your mentions
-- [ ] GET /streams/@me/feed | gets your feed
-- [x] POST /users/@me/rooms | adds a DM room | d: { recipient: string }
-- [x] POST /users/@me/rooms | adds a group DM room | d: { recipients: string[] }
-- [x] DELETE /users/@me/houses/:id | leaves a house
-- [x] DELETE /users/@me/rooms/:id | leaves a group DM
-- [x] DELETE /relationships/@me/friends/:id | unfriends someone
-- [ ] GET /relationships/@me/friends | get your friends
-- [x] POST /relationships/@me/friend-requests | sends a friend request to someone | d: { user_id: string }
-- [x] DELETE /relationships/@me/friend-requests/:id | cancels a friend request
-- [ ] GET /relationships/@me/friend-requests | get your current friend requests
-- [x] PUT /relationships/@me/blocked/:id | blocks a user
-- [x] DELETE /relationships/@me/blocked/:id | unblocks a user
-- [x] PUT relationships/@me/restricted/:id | restricts a user
-- [x] DELETE relationships/@me/restricted/:id | unrestricts a user?
-- [x] PUT /users/@me/settings/room_overrides/:id | changes room settings | d: { notification_preference: int }
+- [x] PATCH /users/@me
+- [x] GET /users/@me
+- [x] GET /streams/@me/mentions
+- [ ] GET /streams/@me/feed
+- [x] POST /users/@me/rooms
+- [x] POST /users/@me/rooms
+- [x] DELETE /users/@me/houses/:id
+- [x] DELETE /users/@me/rooms/:id
+- [x] DELETE /relationships/@me/friends/:id
+- [ ] GET /relationships/@me/friends
+- [x] POST /relationships/@me/friend-requests
+- [x] DELETE /relationships/@me/friend-requests/:id
+- [ ] GET /relationships/@me/friend-requests
+- [x] PUT /relationships/@me/blocked/:id
+- [x] DELETE /relationships/@me/blocked/:id
+- [x] PUT relationships/@me/restricted/:id
+- [x] DELETE relationships/@me/restricted/:id
+- [x] PUT /users/@me/settings/room_overrides/:id
 
-## Websocket Events
-a list of all websocket events
-
-- [x] [after connecting](#after-connecting)
-- [x] [INIT_STATE](#init_state)
-- [x] [HOUSE_JOIN](#house_join)
-- [ ] [HOUSE_MEMBERS_CHUNK](#house_members_chunk)
-- [x] [TYPING_START](#typing_start)
-- [x] [MESSAGE_CREATE](#message_create)
-- [x] [MESSAGE_UPDATE](#message_update)
-- [x] [MESSAGE_DELETE](#message_delete)
-- [x] [ROOM_CREATE](#room_create)
-- [x] [ROOM_UPDATE](#room_update)
-- [x] [ROOM_DELETE](#room_delete)
-- [x] [HOUSE_ENTITIES_UPDATE](#house_entities_update)
-- [ ] [HOUSE_MEMBER_UPDATE](#house_member_update)
-- [ ] [USER_UPDATE](#user_update)
-- [x] [RELATIONSHIP_UPDATE](#relationship_update)
-- [ ] [PRESENCE_UPDATE](#presence_update)
-- [x] [HOUSE_DOWN](#house_down)
-- [x] [HOUSE_UPDATE](#house_update)
-
-
-### after connecting
-```
-op: 1
-d: {
-  hbt_int: 30000
-}
-```
-
-### INIT_STATE
-```
-{
-  op: 0
-  d: {
-    user: {
-      username: string,
-      user_flags: string,
-      name: string,
-      id: string,
-      icon: string,
-      header: string,
-      presence: string
-    },
-    settings: {
-      user_id: string,
-      theme: null,
-      room_overrides: {
-        id: { notification_preference: int }
-      },
-      onboarded: unknown,
-      enable_desktop_notifications: unknown
-    },
-    relationships: {
-      id: {
-        user_id: string,
-        user: {
-          username: string,
-          user_flags: string,
-          name: string,
-          id: string,
-          icon: string,
-          header: string,
-          presence: string
-        },
-        type: int,
-        last_updated_at: string
-      }
-    },
-    read_state: {
-      id: {
-        message_id: string,
-        mention_count: int
-      },
-    },
-    private_rooms: room[]
-    presences: {
-      id: {
-        username: string,
-        user_flags: string,
-        name: string,
-        id: string,
-        icon: string,
-        header: string,
-        presence: string
-      }
-    },
-    house_memberships: {
-      id: {
-        user_id: string,
-        user: {
-          username: string,
-          user_flags: string,
-          name: string,
-          id: string,
-          icon: string,
-          header: string,
-          presence: string
-        },
-        roles: array,
-        last_permission_update: string,
-        joined_at: string,
-        house_id: string
-      }
-    },
-    house_ids: string[]
-  }
-}
-```
-
-### HOUSE_JOIN
-```
-{
-  op: 0
-  d: {
-    rooms: room[{
-      type: int,
-      recipients: null
-      position: int,
-      permission_overrides: bits,
-      owner_id: string,
-      name: string,
-      last_message_id: string,
-      id: string,
-      house_id: string,
-      emoji: object,
-      description: string,
-      default_permission_override: int
-    }],
-    roles: role[{
-      position: int,
-      name: string,
-      level: int,
-      id: string,
-      deny: bits,
-      color: string,
-      allow: bits
-    }],
-    owner_id: string,
-    name: string,
-    members: [{
-      user_id: string,
-      user: {
-        username: string,
-        user_flags: string,
-        name: string,
-        id: string,
-        icon: string,
-        header: string,
-        presence: string
-      },
-      roles: array,
-      last_permission_update: string,
-      joined_at: string,
-      house_id: string
-    }],
-    id: string,
-    icon: string,
-    entities: [{
-      type: int,
-      resource_pointers: [{
-        resource_type: string,
-        resource_id: string
-      }],
-      position: int,
-      name: string,
-      id: string
-    }],
-    default_permissions: int,
-    banner: string
-  }
-}
-```
-
-### HOUSE_MEMBERS_CHUNK
-```
-{
-  op: 0
-  d: {
-    members: {
-      id: {
-        user_id: string,
-        user: {
-          username: string,
-          user_flags: string,
-          name: string,
-          id: string,
-          icon: string,
-          header: string,
-          presence: string
-        },
-        roles: array,
-        last_permission_update: string,
-        joined_at: string,
-        house_id: string
-      }
-    },
-    house_id: string
-  }
-}
-```
-
-### TYPING_START
-```
-{
-  op: 0
-  d: {
-    timestamp: int,
-    room_id: string,
-    house_id: string,
-    author_id: string
-  }
-}
-```
-
-### MESSAGE_CREATE
-```
-{
-  op: 0
-  d: {
-    timestamp: int,
-    room_id: string,
-    mentions: [{
-      username: string,
-      user_flags: string,
-      name: string,
-      id: string,
-      icon: string,
-      header: string,
-      presence: string,
-      bot: boolean
-    }],
-    member: {
-      user_id: string,
-      user: {
-        username: string,
-        user_flags: string,
-        name: string,
-        id: string,
-        icon: string,
-        header: string,
-        presence: string
-      },
-      roles: array,
-      last_permission_update: string,
-      joined_at: string,
-      house_id: string
-    },
-    id: string,
-    house_id: string,
-    exploding_age: int,
-    exploding: boolean,
-    device_id: string,
-    content: string,
-    bucket: int,
-    author_id: string,
-    author: {
-      username: string,
-      user_flags: string,
-      name: string,
-      id: string,
-      icon: string,
-      header: string,
-      presence: string
-    }
-    attachment: {
-      media_url: string,
-      filename: string,
-      dimensions: {
-        width: int,
-        type: string,
-        height: int
-      }
-    }
-  }
-}
-```
-
-### MESSAGE_UPDATE
-```
-{
-  op: 0
-  d: {
-    type: int,
-    timestamp: string,
-    room_id: string,
-    metadata: unknown,
-    mentions: [{
-      username: string,
-      user_flags: string,
-      name: string,
-      id: string,
-      icon: string,
-      header: string,
-      presence: string
-    }],
-    id: string,
-    house_id: string,
-    exploding_age: int,
-    exploding: boolean,
-    embed: object,
-    edited_at: string,
-    device_id: string,
-    content: string,
-    bucket: int,
-    author_id: string,
-    attachment: {
-      media_url: string,
-      filename: string,
-      dimensions: {
-        width: int,
-        type: string,
-        height: int
-      }
-    }
-  }
-}
-```
-
-### MESSAGE_DELETE
-```
-{
-  op: 0
-  d: {
-    room_id: string,
-    message_id: string,
-    house_id: string
-  }
-}
-```
-
-### ROOM_CREATE
-```
-{
-  op: 0
-  d: {
-    type: int,
-    position: int,
-    name: string,
-    id: string,
-    house_id: string
-  }
-}
-```
-
-### ROOM_UPDATE
-```
-{
-  op: 0
-  d: {
-    type: int,
-    position: int,
-    name: string,
-    id: string,
-    house_id: string,
-    emoji: object,
-    description: string
-  }
-}
-```
-
-### ROOM_DELETE
-```
-{
-  op: 0
-  d: {
-    id: '191527742867501935',
-    house_id: '182410583881021247'
-  }
-}
-```
-
-### HOUSE_ENTITIES_UPDATE
-```
-{
-  op: 0
-  d: {
-    house_id: '182410583881021247',
-    entities: [{
-      type: int,
-      resource_pointers: [{
-        resource_type: string,
-        resource_id: string
-      }],
-      position: int,
-      name: string,
-      id: string
-    }]
-  }
-}
-```
-
-### HOUSE_MEMBER_UPDATE
-```
-{
-  op: 0
-  d: {
-    user_id: string,
-    user: {
-      website: string,
-      username: string,
-      user_flags: int,
-      name: string,
-      location: string,
-      id: string,
-      icon: string,
-      header: string,
-      email_verified: boolean,
-      bot: boolean,
-      bio: string
-    },
-    roles: object[],
-    presence: string,
-    last_permission_update: unknown,
-    joined_at: string,
-    id: string,
-    house_id: string
-  }
-}
-```
-
-### USER_UPDATE
-```
-{
-  op: 0
-  d: {
-    website: string,
-    username: string,
-    user_flags: int,
-    name: string,
-    location: string,
-    id: string,
-    icon: string,
-    header: string,
-    email_verified: boolean,
-    bot: boolean,
-    bio: string
-  }
-}
-```
-
-### RELATIONSHIP_UPDATE
-```
-{
-  op: 0
-  d: {
-    user: {
-      website: string,
-      username: string,
-      user_flags: int,
-      name: string,
-      location: string,
-      id: string,
-      icon: string,
-      bio: string
-    },
-    type: int,
-    recipient_id: string,
-    id: string
-  }
-}
-```
-
-### PRESENCE_UPDATE
-```
-{
-  op: 0
-  d: {
-    username: string,
-    user_flags: string,
-    name: string,
-    id: string,
-    icon: string,
-    header: string,
-    presence: string
-  }
-}
-```
-
-### HOUSE_DOWN
-```
-{
-  op: 0
-  d: {
-    unavailable: boolean,
-    house_id: string
-  }
-}
-```
-
-### HOUSE_LEAVE
-```
-{
-  op: 0
-  d: {
-    id: string,
-    house_id: string
-  }
-}
-```
-
-### HOUSE_MEMBER_JOIN
-```
-{
-  op: 0
-  d: {
-    user: {
-      username: string,
-      user_flags: string,
-      name: string,
-      id: string,
-      icon: string,
-      header: string
-    },
-    roles: [],
-    joined_at: string,
-    house_id: string
-  }
-}
-```
-
-### HOUSE_MEMBER_LEAVE
-```
-{
-  op: 0
-  d: {
-    user: {
-      username: string,
-      user_flags: string,
-      name: string,
-      id: string,
-      icon: string,
-      header: string
-    },
-    roles: [],
-    presence: string,
-    joined_at: string,
-    house_id: string
-  }
-}
-```
-
-### HOUSE_UPDATE
-```
-{
-  op: 0
-  d: {
-    type: int,
-    roles: [{
-      position: int,
-      name: string,
-      level: int,
-      id: string,
-      deny: int,
-      color: string,
-      allow: int
-    }],
-    owner_id: string,
-    name: string,
-    id: string,
-    icon: string,
-    house_id: string,
-    entities: [{
-      type: int,
-      resource_pointers: [{
-        resource_type: string,
-        resource_id: string
-      }],
-      position: int,
-      name: string,
-      id: string
-    }],
-    default_permissions: int,
-    banner: unknown
-  }
-}
-```
-
-
-## Websocket Data
-list of websocket data you can send
-
-### Ping
-```
-{
-  op: 3
-}
-```
-This is to be sent on an interval of hbt_int, as received upon connection.
-
-### Init
-```
-{
-  op: 2,
-  d: {
-    token: string
-  }
-}
-```
-Authenticates you to Hiven Swarm.
-Causes the server to send `INIT_STATE`, and `HOUSE_JOIN` for every house the authenticated account is in.
-
-### Request presence updates
-```
-{
-  op: 6
-  d: {
-    user_ids: string[]
-  }
-}
-```
-Subscribes you to presence updates for a user.
-Causes the server to send `PRESENCE_UPDATE` immediately after subscribing, and whenever the presence of a user you've subscribed to changes.
-
-### Request house members
-```
-{
-  op: 7,
-  d: {
-    house_id: string;
-    user_ids: string[];
-  }
-}
-```
-Causes the server to send `HOUSE_MEMBER_CHUNK` with the member data of the requested users.
-
-### Select a room
-```
-{
-  op:4,
-  d:{
-    id: string
-  }
-}
-```
-Haven't been able to get this working properly, but it seems to be so Hiven remembers what room you were last viewing, so you can be put back into that room next time you visit Hiven.
-
-
-## Permissions
-All the permission bits in a row, I will probably make a class for this at some point.
-Thanks to [@rishon](https://app.hiven.io/@rishon) for this list!
-- SEND_MESSAGES = 1 << 0,
-- READ_MESSAGES = 1 << 1,
-- ADMINISTRATOR = 1 << 2,
-- MODERATE_ROOM = 1 << 3,
-- EVICT_MEMBERS = 1 << 4,
-- KICK_MEMBERS = 1 << 5,
-- ATTACH_MEDIA = 1 << 6,
-- MANAGE_ROLES = 1 << 7,
-- MANAGE_BILLING = 1 << 8,
-- MANAGE_BOTS = 1 << 9,
-- MANAGE_INTEGRATIONS = 1 << 10,
-- MANAGE_ROOMS = 1 << 11,
-- START_PORTAL = 1 << 12,
-- STREAM_TO_PORTAL = 1 << 13,
-- TAKEOVER_PORTAL = 1 << 14,
-- POST_TO_FEED = 1 << 15,
-- MANAGE_USER_OVERRIDES = 1 << 16,
-- CREATE_INVITES = 1 << 17,
-- MANAGE_INVITES = 1 << 18
 
 ## Future Updates
 - roles
 - members
 
-## Data Structures
+## Websocket Events
 
-### user
-```
-{
-  username: string,
-  user_flags: string,
-  name: string,
-  id: string,
-  icon: string,
-  header: string,
-  presence: string
-}
-```
+- [x] after connecting
+- [x] INIT_STATE
+- [x] HOUSE_JOIN
+- [ ] HOUSE_MEMBERS_CHUNK
+- [x] TYPING_START
+- [x] MESSAGE_CREATE
+- [x] MESSAGE_UPDATE
+- [x] MESSAGE_DELETE
+- [x] ROOM_CREATE
+- [x] ROOM_UPDATE
+- [x] ROOM_DELETE
+- [x] HOUSE_ENTITIES_UPDATE
+- [ ] HOUSE_MEMBER_UPDATE
+- [ ] USER_UPDATE
+- [x] RELATIONSHIP_UPDATE
+- [ ] PRESENCE_UPDATE
+- [x] HOUSE_DOWN
+- [x] HOUSE_UPDATE
 
-### room
-```
-{
-  type: int,
-  recipients: [{
-    username: string,
-    user_flags: string,
-    name: string,
-    id: string,
-    icon: string,
-    header: string,
-    presence: string
-  }],
-  position: int,
-  permission_overrides: bits,
-  owner_id: string,
-  name: string,
-  last_message_id: string,
-  id: string,
-  house_id: string,
-  emoji: object,
-  description: string,
-  default_permission_override: int
-}
-```
+## Websocket Data
 
-### member
-```
-{
-  user_id: string,
-  user: {
-    username: string,
-    user_flags: string,
-    name: string,
-    id: string,
-    icon: string,
-    header: string,
-    presence: string
-  },
-  roles: array,
-  last_permission_update: string,
-  joined_at: string,
-  house_id: string
-}
-```
-
-### role
-```
-{
-  position: int,
-  name: string,
-  level: int,
-  id: string,
-  deny: int,
-  color: string,
-  allow: int
-}
-```
-
-### entity
-```
-{
-  type: int,
-  resource_pointers: [{
-    resource_type: string,
-    resource_id: string
-  }],
-  position: int,
-  name: string,
-  id: string
-}
-```
-
-## Type Integers
-### relationship types
-```
-{
-  0: 'none',
-  1: 'outgoing request',
-  2: 'incoming request',
-  3: 'friends',
-  4: 'restricted',
-  5: 'blocked'
-}
-```
-
-### notification preferences
-```
-{
-  0: 'all',
-  1: 'mentions',
-  2: 'none'
-}
-```
-
-### room types
-```
-{
-  0: 'House',
-  1: 'DM',
-  2: 'Group'
-}
-```
+- [x] [Ping](#ping)
+- [x] [Init](#init)
+- [ ] [Request Presence Updates](#request-presence-updates)
+- [ ] [Request House Members](#request-house-members)
+- [ ] [Select A Room](#select-a-room)
 
 
 ## Secret Chat Stuff

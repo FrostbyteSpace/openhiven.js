@@ -66,7 +66,7 @@ module.exports = class Bot extends Client {
         }
         break;
       default:
-        var e = new Error('options.commands can only be a string or a EasyHiven.Command, or an array of those.');
+        var e = new Error('options.commands can only be a string or a OpenHiven.Command, or an array of those.');
     }
   }
 
@@ -82,7 +82,7 @@ module.exports = class Bot extends Client {
 
 
   static async _OnInit() {
-    const file = await (async () => fs.readFileSync('/home/cyber/Documents/code/hiven/easyhiven.js/hiven.ascii', 'utf8'))();
+    const file = await (async () => fs.readFileSync(Path.join(__dirname, '../hiven.ascii'), 'utf8'))();
     this.connectTime = Date.now() - this.createTime;
     this._log(`${file.white}Connected in ${(this.connectTime+'ms').brightGreen}`, 1);
   }

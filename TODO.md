@@ -1,5 +1,7 @@
 # TODO <!-- omit in toc -->
 
+Looking for the documentation that used to be here? [hiven.docs](https://github.com/FrostbyteSpace/hiven.docs)!
+
 ## NAV
 - [NAV](#nav)
 - [Endpoints](#endpoints)
